@@ -11,7 +11,7 @@ export default function Table<T>({ table }: Props<T>) {
 				{table.getHeaderGroups().map((headerGroup) => (
 					<tr key={headerGroup.id} className="font-normal text-neutral-50">
 						{headerGroup.headers.map((header) => (
-							<th key={header.id} className="bg-slate-400 px-4 py-1">
+							<th key={header.id} className="bg-gray-800 px-8 py-1">
 								{header.isPlaceholder
 									? null
 									: flexRender(
@@ -29,7 +29,7 @@ export default function Table<T>({ table }: Props<T>) {
 						{row.getVisibleCells().map((cell) => (
 							<td
 								key={cell.id}
-								className="bg-slate-100 group-hover:bg-slate-300 px-4 py-1 transition-colors"
+								className="bg-slate-100 group-hover:bg-slate-300 px-8 py-1 transition-colors"
 							>
 								{flexRender(cell.column.columnDef.cell, cell.getContext())}
 							</td>

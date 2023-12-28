@@ -1,5 +1,5 @@
 import api from '@/utils/api';
-import { currentUserSchema } from '@/utils/schemas';
+import { currentUserSchema } from '@/utils/types';
 
 export default async function Page() {
 	const result = await api('/me');

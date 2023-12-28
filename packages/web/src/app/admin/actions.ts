@@ -1,7 +1,9 @@
 'use server';
 
 import api from '@/utils/api';
+import { currentUserSchema } from '@/utils/types';
 import { revalidateTag } from 'next/cache';
+import { z } from 'zod';
 
 export async function createSchoolFormAction(formData: FormData) {
 	await api('/schools', {
@@ -18,4 +20,12 @@ export async function deleteSchoolAction(id: number) {
 	});
 
 	revalidateTag('admin-dashboard-schools');
+}
+
+export async function fetchUsers(schoolId: number) {
+	const response = await api(`/schools/${schoolId}/users`);
+
+	const users = z.array(currentUserSchema).parse(response);
+
+	return users;
 }

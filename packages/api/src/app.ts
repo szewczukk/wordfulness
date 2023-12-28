@@ -6,6 +6,7 @@ import { drizzle } from 'drizzle-orm/postgres-js';
 import bcrypt, { compareSync } from 'bcrypt';
 import { eq } from 'drizzle-orm';
 import jwt from 'jsonwebtoken';
+import cors from 'cors';
 
 const queryClient = postgres(
 	'postgresql://postgres:zaq1@WSX@localhost:5432/wordfulnessjs?sslmode=disable'
@@ -14,6 +15,7 @@ const db = drizzle(queryClient);
 
 const app = express();
 
+app.use(cors());
 app.use(express.json());
 
 const createSchoolBodySchema = z.object({
@@ -43,6 +45,16 @@ app.delete('/schools/:id', async (req, res) => {
 	const result = (
 		await db.delete(schools).where(eq(schools.id, id)).returning()
 	)[0];
+
+	res.json(result);
+});
+
+app.get('/schools/:id/users', async (req, res) => {
+	const params = deleteSchoolParamsSchema.parse(req.params);
+
+	const id = parseInt(params.id);
+
+	const result = await db.select().from(users).where(eq(users.schoolId, id));
 
 	res.json(result);
 });

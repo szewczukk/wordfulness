@@ -1,6 +1,5 @@
 import api from '@/utils/api';
-import { currentUserSchema } from '@/utils/schemas';
-import { schoolSchema } from '@/utils/types';
+import { currentUserSchema, schoolSchema } from '@/utils/types';
 import { z } from 'zod';
 import AdminDashboard from './AdminDashboard';
 
