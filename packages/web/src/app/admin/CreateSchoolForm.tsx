@@ -1,4 +1,4 @@
-import createSchoolFormAction from './createSchoolFormAction';
+import { createSchoolFormAction } from './actions';
 
 export default function CreateSchoolForm() {
 	return (

@@ -1,4 +1,6 @@
+import TrashIcon from '@/ui/icons/TrashIcon';
 import { School } from '@/utils/types';
+import { deleteSchoolAction } from './actions';
 
 type Props = {
 	schools: School[];
@@ -30,7 +32,13 @@ export default function SchoolsTable({
 							{school.name}
 						</td>
 						<td className="bg-slate-100 group-hover:bg-slate-300 px-4 py-1 transition-colors">
-							<div className="flex items-center gap-4">
+							<div className="flex items-center justify-center gap-4">
+								<button
+									className="p-2 hover:bg-slate-400 transition-colors"
+									onClick={() => deleteSchoolAction(school.id)}
+								>
+									<TrashIcon />
+								</button>
 								<button
 									className={` border px-6 py-1 ${
 										selectedSchoolId === school.id

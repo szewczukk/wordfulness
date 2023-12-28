@@ -31,6 +31,22 @@ app.post('/schools', async (req, res) => {
 	res.json(result[0]);
 });
 
+const deleteSchoolParamsSchema = z.object({
+	id: z.string(),
+});
+
+app.delete('/schools/:id', async (req, res) => {
+	const params = deleteSchoolParamsSchema.parse(req.params);
+
+	const id = parseInt(params.id);
+
+	const result = (
+		await db.delete(schools).where(eq(schools.id, id)).returning()
+	)[0];
+
+	res.json(result);
+});
+
 app.get('/schools', async (req, res) => {
 	const result = await db.select().from(schools);
 
