@@ -7,17 +7,19 @@ import AdminDashboard from './AdminDashboard';
 const fetchSchoolsSchema = z.array(schoolSchema);
 
 export default async function Page() {
-	const result = await api.get('/me');
+	const result = await api('/me');
 
-	const currentUser = currentUserSchema.parse(result.data);
+	const currentUser = currentUserSchema.parse(result);
 
 	if (currentUser.role !== 'superuser') {
 		return <h1>No access</h1>;
 	}
 
-	const schoolsResult = await api.get('/schools');
+	const schoolsResult = await api('/schools', {
+		next: { tags: ['admin-dashboard-schools'] },
+	});
 
-	const schools = fetchSchoolsSchema.parse(schoolsResult.data);
+	const schools = fetchSchoolsSchema.parse(schoolsResult);
 
 	return <AdminDashboard schools={schools} />;
 }

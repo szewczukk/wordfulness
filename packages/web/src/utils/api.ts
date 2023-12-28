@@ -1,18 +1,23 @@
-import axios from 'axios';
 import { cookies } from 'next/headers';
 
-const api = axios.create({
-	baseURL: 'http://localhost:3001',
-});
+export default async function api(
+	path: string,
+	config?: Omit<RequestInit, 'headers'>
+) {
+	let headers: HeadersInit = [['Content-Type', 'application/json']];
 
-api.interceptors.request.use((config) => {
 	const token = cookies().get('token')?.value;
 
 	if (token) {
-		config.headers.set('authorization', `Bearer ${token}`);
+		headers = [...headers, ['Authorization', `Bearer ${token}`]];
 	}
 
-	return config;
-});
+	const response = await fetch(`http://localhost:3001${path}`, {
+		headers,
+		...config,
+	});
 
-export default api;
+	const result = await response.json();
+
+	return result;
+}

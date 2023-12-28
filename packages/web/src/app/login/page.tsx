@@ -11,12 +11,15 @@ export default async function Page() {
 	async function handleSubmit(formData: FormData) {
 		'use server';
 
-		const result = await api.post('/login', {
-			username: formData.get('username'),
-			password: formData.get('password'),
+		const result = await api('/login', {
+			method: 'POST',
+			body: JSON.stringify({
+				username: formData.get('username'),
+				password: formData.get('password'),
+			}),
 		});
 
-		const payload = loginPayloadSchema.parse(result.data);
+		const payload = loginPayloadSchema.parse(result);
 
 		cookies().set('token', payload.token);
 
