@@ -21,7 +21,7 @@ export default async function Page() {
 
 		const payload = loginPayloadSchema.parse(result);
 
-		cookies().set('token', payload.token);
+		cookies().set('token', payload.token, { httpOnly: true, sameSite: true });
 
 		redirect('/dashboard');
 	}
