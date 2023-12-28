@@ -1,0 +1,157 @@
+import express from 'express';
+import { schools, users } from './db/schema.js';
+import { z } from 'zod';
+import postgres from 'postgres';
+import { drizzle } from 'drizzle-orm/postgres-js';
+import bcrypt, { compareSync } from 'bcrypt';
+import { eq } from 'drizzle-orm';
+import jwt from 'jsonwebtoken';
+
+const queryClient = postgres(
+	'postgresql://postgres:zaq1@WSX@localhost:5432/wordfulnessjs?sslmode=disable'
+);
+const db = drizzle(queryClient);
+
+const app = express();
+
+app.use(express.json());
+
+const createSchoolBodySchema = z.object({
+	name: z.string().min(1).max(20),
+});
+
+app.post('/schools', async (req, res) => {
+	const body = createSchoolBodySchema.parse(req.body);
+
+	const result = await db
+		.insert(schools)
+		.values({ name: body.name })
+		.returning();
+
+	res.json(result[0]);
+});
+
+app.get('/schools', async (req, res) => {
+	const result = await db.select().from(schools);
+
+	res.json(result);
+});
+
+const createUserBodySchema = z
+	.object({
+		username: z.string().min(1).max(20),
+		password: z.string().min(1).max(20),
+		role: z.literal('superuser'),
+	})
+	.or(
+		z.object({
+			username: z.string().min(1).max(20),
+			password: z.string().min(1).max(20),
+			role: z.enum(['admin', 'teacher', 'student']),
+			schoolId: z.number(),
+		})
+	);
+
+app.post('/users', async (req, res) => {
+	const body = createUserBodySchema.parse(req.body);
+
+	const password = await bcrypt.hash(body.password, 10);
+
+	if (body.role !== 'superuser') {
+		const result = await db
+			.insert(users)
+			.values({
+				password,
+				role: body.role,
+				schoolId: body.schoolId,
+				username: body.username,
+			})
+			.returning();
+
+		return res.json({ ...result[0], password: undefined });
+	}
+
+	const result = await db
+		.insert(users)
+		.values({
+			password,
+			role: body.role,
+			username: body.username,
+		})
+		.returning();
+
+	res.json({ ...result[0], password: undefined });
+});
+
+app.get('/users', async (req, res) => {
+	const result = await db.select().from(users);
+
+	const withoutPassword = result.map((user) => ({
+		...user,
+		password: undefined,
+	}));
+
+	res.json(withoutPassword);
+});
+
+const loginBodySchema = z.object({
+	username: z.string().min(1).max(20),
+	password: z.string().min(1).max(20),
+});
+
+app.post('/login', async (req, res) => {
+	const body = loginBodySchema.parse(req.body);
+
+	const result = await db
+		.select()
+		.from(users)
+		.where(eq(users.username, body.username));
+
+	const user = result[0];
+
+	if (!user) {
+		return res.sendStatus(404);
+	}
+
+	if (!compareSync(body.password, user.password)) {
+		return res.sendStatus(403);
+	}
+
+	const token = jwt.sign({ id: user.id }, 'SECRET', { expiresIn: '7d' });
+
+	res.json({ token });
+});
+
+const jwtTokenSchema = z.object({
+	id: z.number(),
+});
+
+app.get('/me', async (req, res) => {
+	const bearerToken = req.headers.authorization;
+
+	if (!bearerToken) {
+		return res.sendStatus(403);
+	}
+
+	const token = bearerToken.split(' ')[1];
+
+	const payload = jwt.decode(token);
+
+	if (!payload) {
+		return res.sendStatus(400);
+	}
+
+	const result = jwtTokenSchema.parse(payload);
+
+	const user = (
+		await db.select().from(users).where(eq(users.id, result.id))
+	)[0];
+
+	if (!user) {
+		return res.sendStatus(403);
+	}
+
+	res.json({ ...user, password: undefined });
+});
+
+app.listen(3001, () => console.log('Listening on 3001..'));
