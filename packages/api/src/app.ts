@@ -122,6 +122,20 @@ app.get('/users', async (req, res) => {
 	res.json(withoutPassword);
 });
 
+const deleteUserParamsSchema = z.object({
+	id: z.string(),
+});
+
+app.delete('/users/:id', async (req, res) => {
+	const params = deleteUserParamsSchema.parse(req.params);
+
+	const id = parseInt(params.id);
+
+	const user = (await db.delete(users).where(eq(users.id, id)).returning())[0];
+
+	res.json(user);
+});
+
 const loginBodySchema = z.object({
 	username: z.string().min(1).max(20),
 	password: z.string().min(1).max(20),

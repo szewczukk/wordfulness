@@ -5,7 +5,7 @@ import SchoolsTable from './SchoolsTable';
 import { useEffect, useState } from 'react';
 import CreateSchoolForm from './CreateSchoolForm';
 import UsersTable from './UsersTable';
-import { fetchUsers } from './actions';
+import { deleteUserAction, fetchUsers } from './actions';
 import CreateUserForm from './CreateUserForm';
 
 type Props = {
@@ -48,6 +48,12 @@ export default function AdminDashboard({ schools }: Props) {
 		});
 	};
 
+	const handleUserDeleted = async (userId: number) => {
+		await deleteUserAction(userId);
+
+		setSchoolsUsers((prev) => prev?.filter((user) => user.id !== userId));
+	};
+
 	return (
 		<div className="container mx-auto flex flex-col gap-8 items-start mt-8 bg-slate-200 p-12 min-h-[704px]">
 			<div className="flex flex-col gap-4">
@@ -68,7 +74,7 @@ export default function AdminDashboard({ schools }: Props) {
 						schoolId={selectedSchool.id}
 						onUserCreated={handleUserCreated}
 					/>
-					<UsersTable users={schoolsUsers} />
+					<UsersTable users={schoolsUsers} onUserDeleted={handleUserDeleted} />
 				</>
 			)}
 		</div>

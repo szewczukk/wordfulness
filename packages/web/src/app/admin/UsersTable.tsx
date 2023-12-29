@@ -10,9 +10,10 @@ import Table from '@/ui/Table';
 
 type Props = {
 	users: User[];
+	onUserDeleted: (userId: number) => void;
 };
 
-export default function SchoolsTable({ users }: Props) {
+export default function SchoolsTable({ users, onUserDeleted }: Props) {
 	const columnHelper = createColumnHelper<User>();
 	const columns = [
 		columnHelper.accessor('id', { cell: (info) => info.getValue() }),
@@ -20,9 +21,12 @@ export default function SchoolsTable({ users }: Props) {
 		columnHelper.accessor('role', { cell: (info) => info.getValue() }),
 		columnHelper.display({
 			header: 'Actions',
-			cell: () => (
+			cell: ({ row }) => (
 				<div className="flex items-center justify-center gap-4">
-					<button className="p-2 hover:bg-slate-400 transition-colors">
+					<button
+						className="p-2 hover:bg-slate-400 transition-colors"
+						onClick={() => onUserDeleted(row.original.id)}
+					>
 						<TrashIcon />
 					</button>
 				</div>

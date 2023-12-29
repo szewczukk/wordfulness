@@ -57,3 +57,13 @@ export async function createUserAction(formData: FormData) {
 
 	return user;
 }
+
+export async function deleteUserAction(id: number) {
+	const result = await api(`/users/${id}`, {
+		method: 'DELETE',
+	});
+
+	const user = currentUserSchema.parse(result);
+
+	return user;
+}
