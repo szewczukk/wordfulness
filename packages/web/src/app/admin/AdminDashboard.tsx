@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import CreateSchoolForm from './CreateSchoolForm';
 import UsersTable from './UsersTable';
 import { fetchUsers } from './actions';
+import CreateUserForm from './CreateUserForm';
 
 type Props = {
 	schools: School[];
@@ -37,6 +38,16 @@ export default function AdminDashboard({ schools }: Props) {
 		})();
 	}, [selectedSchool]);
 
+	const handleUserCreated = (user: User) => {
+		setSchoolsUsers((prev) => {
+			if (!prev) {
+				return [user];
+			}
+
+			return [...prev, user];
+		});
+	};
+
 	return (
 		<div className="container mx-auto flex flex-col gap-8 items-start mt-8 bg-slate-200 p-12 min-h-[704px]">
 			<div className="flex flex-col gap-4">
@@ -53,6 +64,10 @@ export default function AdminDashboard({ schools }: Props) {
 					<h1 className="font-semibold text-xl">
 						Selected school: {selectedSchool.name}
 					</h1>
+					<CreateUserForm
+						schoolId={selectedSchool.id}
+						onUserCreated={handleUserCreated}
+					/>
 					<UsersTable users={schoolsUsers} />
 				</>
 			)}

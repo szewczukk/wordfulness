@@ -29,3 +29,31 @@ export async function fetchUsers(schoolId: number) {
 
 	return users;
 }
+
+export async function createUserAction(formData: FormData) {
+	const formSchoolId = formData.get('schoolId');
+
+	if (!formSchoolId) {
+		return;
+	}
+
+	const schoolId = parseInt(formSchoolId.toString());
+
+	if (!schoolId) {
+		return;
+	}
+
+	const result = await api('/users', {
+		method: 'POST',
+		body: JSON.stringify({
+			username: formData.get('username'),
+			password: formData.get('password'),
+			schoolId,
+			role: formData.get('role'),
+		}),
+	});
+
+	const user = currentUserSchema.parse(result);
+
+	return user;
+}
