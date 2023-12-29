@@ -1,10 +1,10 @@
 import api from '@/utils/api';
-import { currentUserSchema } from '@/utils/types';
+import { userSchema } from '@/utils/types';
 
 export default async function Page() {
 	const result = await api('/me');
 
-	const currentUser = currentUserSchema.parse(result);
+	const currentUser = userSchema.parse(result);
 
 	return (
 		<div className="container mx-auto">

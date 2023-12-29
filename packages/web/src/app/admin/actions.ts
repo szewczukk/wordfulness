@@ -1,7 +1,7 @@
 'use server';
 
 import api from '@/utils/api';
-import { currentUserSchema } from '@/utils/types';
+import { userSchema } from '@/utils/types';
 import { revalidateTag } from 'next/cache';
 import { z } from 'zod';
 
@@ -25,7 +25,7 @@ export async function deleteSchoolAction(id: number) {
 export async function fetchUsers(schoolId: number) {
 	const response = await api(`/schools/${schoolId}/users`);
 
-	const users = z.array(currentUserSchema).parse(response);
+	const users = z.array(userSchema).parse(response);
 
 	return users;
 }
@@ -53,7 +53,7 @@ export async function createUserAction(formData: FormData) {
 		}),
 	});
 
-	const user = currentUserSchema.parse(result);
+	const user = userSchema.parse(result);
 
 	return user;
 }
@@ -63,7 +63,7 @@ export async function deleteUserAction(id: number) {
 		method: 'DELETE',
 	});
 
-	const user = currentUserSchema.parse(result);
+	const user = userSchema.parse(result);
 
 	return user;
 }
