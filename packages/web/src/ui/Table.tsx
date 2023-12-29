@@ -29,7 +29,7 @@ export default function Table<T>({ table }: Props<T>) {
 						{row.getVisibleCells().map((cell) => (
 							<td
 								key={cell.id}
-								className="bg-slate-100 group-hover:bg-slate-300 px-8 py-1 transition-colors"
+								className="bg-slate-100 px-8 py-1 transition-colors group-hover:bg-slate-500"
 							>
 								{flexRender(cell.column.columnDef.cell, cell.getContext())}
 							</td>

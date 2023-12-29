@@ -8,7 +8,7 @@ export default function CreateSchoolForm() {
 
 			<button
 				type="submit"
-				className="bg-green-700 px-8 py-1 text-neutral-50 hover:bg-green-800 transition-colors"
+				className="bg-green-700 px-8 py-1 text-neutral-50 transition-colors hover:bg-green-800"
 			>
 				Create school
 			</button>

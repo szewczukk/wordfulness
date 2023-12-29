@@ -55,10 +55,10 @@ export default function AdminDashboard({ schools }: Props) {
 	};
 
 	return (
-		<div className="container mx-auto flex flex-col gap-8 items-start mt-8 bg-slate-200 p-12 min-h-[704px]">
+		<div className="container mx-auto mt-8 flex min-h-[704px] flex-col items-start gap-8 bg-slate-200 p-12">
 			<div className="flex flex-col gap-4">
 				<CreateSchoolForm />
-				<h1 className="font-semibold text-xl">Schools</h1>
+				<h1 className="text-xl font-semibold">Schools</h1>
 				<SchoolsTable
 					schools={schools}
 					selectSchool={handleSelectSchool}
@@ -67,7 +67,7 @@ export default function AdminDashboard({ schools }: Props) {
 			</div>
 			{selectedSchool && schoolsUsers && (
 				<>
-					<h1 className="font-semibold text-xl">
+					<h1 className="text-xl font-semibold">
 						Selected school: {selectedSchool.name}
 					</h1>
 					<CreateUserForm

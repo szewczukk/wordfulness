@@ -28,7 +28,7 @@ export default function SchoolsTable({
 			cell: ({ row }) => (
 				<div className="flex items-center justify-center gap-4">
 					<button
-						className="p-2 hover:bg-slate-400 transition-colors"
+						className="p-2 transition-colors hover:bg-slate-400"
 						onClick={() => deleteSchoolAction(row.original.id)}
 					>
 						<TrashIcon />
@@ -36,7 +36,7 @@ export default function SchoolsTable({
 					<button
 						className={`border px-6 py-1 ${
 							selectedSchoolId === row.original.id
-								? 'border-gray-800 bg-transparent text-gray-800 hover:bg-gray-400 hover:text-gray-50 hover:border-gray-300'
+								? 'border-gray-800 bg-transparent text-gray-800 hover:border-gray-300 hover:bg-gray-400 hover:text-gray-50'
 								: 'border-transparent bg-gray-800 text-gray-50 hover:bg-gray-700'
 						} transition-colors`}
 						onClick={() => selectSchool(row.original)}

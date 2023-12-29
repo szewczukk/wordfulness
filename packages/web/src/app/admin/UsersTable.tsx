@@ -24,7 +24,7 @@ export default function SchoolsTable({ users, onUserDeleted }: Props) {
 			cell: ({ row }) => (
 				<div className="flex items-center justify-center gap-4">
 					<button
-						className="p-2 hover:bg-slate-400 transition-colors"
+						className="p-2 transition-colors hover:bg-slate-400"
 						onClick={() => onUserDeleted(row.original.id)}
 					>
 						<TrashIcon />

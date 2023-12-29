@@ -31,7 +31,7 @@ export default async function Page() {
 		<div className="container mx-auto">
 			<form
 				action={handleSubmit}
-				className="p-8 bg-slate-300 mt-8 flex flex-col gap-2 items-start"
+				className="mt-8 flex flex-col items-start gap-2 bg-slate-300 p-8"
 			>
 				<label htmlFor="username">Username</label>
 				<Input
@@ -51,7 +51,7 @@ export default async function Page() {
 
 				<button
 					type="submit"
-					className="bg-green-700 px-8 py-1 text-neutral-50 hover:bg-green-800 transition-colors"
+					className="bg-green-700 px-8 py-1 text-neutral-50 transition-colors hover:bg-green-800"
 				>
 					Log in
 				</button>
