@@ -2,6 +2,7 @@ import api from '@/utils/api';
 import { redirect } from 'next/navigation';
 import { cookies } from 'next/headers';
 import { z } from 'zod';
+import Input from '@/ui/Input';
 
 const loginPayloadSchema = z.object({
 	token: z.string(),
@@ -33,20 +34,18 @@ export default async function Page() {
 				className="p-8 bg-slate-300 mt-8 flex flex-col gap-2 items-start"
 			>
 				<label htmlFor="username">Username</label>
-				<input
+				<Input
 					type="text"
 					name="username"
 					id="username"
-					className="px-2 py-1"
 					placeholder="Enter username"
 				/>
 
 				<label htmlFor="password">Password</label>
-				<input
+				<Input
 					type="password"
 					name="password"
 					id="password"
-					className="px-2 py-1"
 					placeholder="Enter password"
 				/>
 
