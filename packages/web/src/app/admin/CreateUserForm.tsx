@@ -38,7 +38,6 @@ export default function CreateUserForm({ schoolId, onUserCreated }: Props) {
 			/>
 			<input type="number" name="schoolId" value={schoolId} hidden />
 			<select name="role" className="bg-gray-300 px-8 py-1 border">
-				<option value="superuser">Superuser</option>
 				<option value="admin">Admin</option>
 				<option value="teacher">Teacher</option>
 				<option value="student">Student</option>
