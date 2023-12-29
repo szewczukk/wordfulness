@@ -2,6 +2,7 @@ import { User } from '@/utils/types';
 import { createUserAction } from './actions';
 import { FormEvent } from 'react';
 import Input from '@/ui/Input';
+import Select from '@/ui/Select';
 
 type Props = {
 	schoolId: number;
@@ -27,13 +28,12 @@ export default function CreateUserForm({ schoolId, onUserCreated }: Props) {
 		<form className="flex items-center gap-2" onSubmit={handleSubmit}>
 			<Input type="text" name="username" placeholder="Enter username.." />
 			<Input type="password" name="password" placeholder="Enter password.." />
-			<input type="number" name="schoolId" value={schoolId} hidden />
+			<Input type="number" name="schoolId" defaultValue={schoolId} hidden />
 
-			<select name="role" className="bg-gray-300 px-8 py-1 border">
-				<option value="admin">Admin</option>
-				<option value="teacher">Teacher</option>
-				<option value="student">Student</option>
-			</select>
+			<Select
+				name="role"
+				options={{ admin: 'Admin', teacher: 'Teacher', student: 'Student' }}
+			/>
 
 			<button
 				type="submit"
