@@ -1,5 +1,5 @@
 import express from 'express';
-import { schools, users } from './db/schema.js';
+import { courses, schools, users } from './db/schema.js';
 import { z } from 'zod';
 import postgres from 'postgres';
 import { drizzle } from 'drizzle-orm/postgres-js';
@@ -194,6 +194,44 @@ app.get('/me', async (req, res) => {
 	}
 
 	res.json({ ...user, password: undefined });
+});
+
+const createCourseParamsSchema = z.object({
+	id: z.string(),
+});
+
+const createCourseBodySchema = z.object({
+	name: z.string(),
+});
+
+app.post('/schools/:id/courses', async (req, res) => {
+	const body = createCourseBodySchema.parse(req.body);
+	const params = createCourseParamsSchema.parse(req.params);
+
+	const schoolId = parseInt(params.id);
+
+	const course = (
+		await db.insert(courses).values({ name: body.name, schoolId }).returning()
+	)[0];
+
+	res.json(course);
+});
+
+const fetchCoursesParamsSchema = z.object({
+	id: z.string(),
+});
+
+app.get('/schools/:id/courses', async (req, res) => {
+	const params = fetchCoursesParamsSchema.parse(req.params);
+
+	const schoolId = parseInt(params.id);
+
+	const dbCourses = await db
+		.select()
+		.from(courses)
+		.where(eq(courses.schoolId, schoolId));
+
+	res.json(dbCourses);
 });
 
 app.listen(3001, () => console.log('Listening on 3001..'));

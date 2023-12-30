@@ -26,3 +26,11 @@ export const users = pgTable('users', {
 	schoolId: integer('schoolId').references(() => schools.id),
 	role: userRole('role').notNull(),
 });
+
+export const courses = pgTable('courses', {
+	id: serial('id').primaryKey(),
+	name: varchar('name', { length: 20 }).notNull(),
+	schoolId: integer('schoolId')
+		.notNull()
+		.references(() => schools.id),
+});

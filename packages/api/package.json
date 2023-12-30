@@ -9,6 +9,7 @@
 		"build": "tsc",
 		"format": "prettier --write .",
 		"lint": "eslint .",
+		"db:push": "drizzle-kit push:pg",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"keywords": [],
