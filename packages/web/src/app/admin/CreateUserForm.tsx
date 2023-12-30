@@ -3,6 +3,7 @@ import { createUserAction } from './actions';
 import { FormEvent } from 'react';
 import Input from '@/ui/Input';
 import Select from '@/ui/Select';
+import Button from '@/ui/Button';
 
 type Props = {
 	schoolId: number;
@@ -35,12 +36,7 @@ export default function CreateUserForm({ schoolId, onUserCreated }: Props) {
 				options={{ admin: 'Admin', teacher: 'Teacher', student: 'Student' }}
 			/>
 
-			<button
-				type="submit"
-				className="bg-green-700 px-8 py-1 text-neutral-50 transition-colors hover:bg-green-800"
-			>
-				Create user
-			</button>
+			<Button type="submit">Create user</Button>
 		</form>
 	);
 }

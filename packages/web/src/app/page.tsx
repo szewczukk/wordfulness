@@ -1,3 +1,4 @@
+import Button from '@/ui/Button';
 import Input from '@/ui/Input';
 import api from '@/utils/api';
 import { courseSchema, userSchema } from '@/utils/types';
@@ -37,29 +38,33 @@ export default async function Page() {
 	const courses = z.array(courseSchema).parse(coursesResult);
 
 	return (
-		<div className="container mx-auto">
+		<div className="container mx-auto mt-8 flex flex-col gap-8 bg-slate-200 p-8">
 			<h1>
-				{currentUser.username} ({currentUser.role})
+				Hello, {currentUser.username} ({currentUser.role})!
 			</h1>
-			<h1>Courses</h1>
-			{currentUser.role === 'admin' && (
-				<form action={createCourseAction}>
-					<Input type="text" name="name" placeholder="Enter name.." />
-					<Input
-						type="number"
-						name="schoolId"
-						defaultValue={currentUser.schoolId}
-						hidden
-					/>
+			<div className="flex flex-col gap-4">
+				<h1 className="text-xl font-semibold">Courses</h1>
+				<ul>
+					{courses.map((course) => (
+						<li key={course.id} className="list-inside list-disc">
+							{course.name}
+						</li>
+					))}
+				</ul>
+				{currentUser.role === 'admin' && (
+					<form action={createCourseAction} className="flex gap-4">
+						<Input type="text" name="name" placeholder="Enter name.." />
+						<Input
+							type="number"
+							name="schoolId"
+							defaultValue={currentUser.schoolId}
+							hidden
+						/>
 
-					<button type="submit">Create course</button>
-				</form>
-			)}
-			<ul>
-				{courses.map((course) => (
-					<li key={course.id}>{course.name}</li>
-				))}
-			</ul>
+						<Button type="submit">Create course</Button>
+					</form>
+				)}
+			</div>
 		</div>
 	);
 }
