@@ -24,7 +24,7 @@ export default async function Page() {
 
 		cookies().set('token', payload.token, { httpOnly: true, sameSite: true });
 
-		redirect('/dashboard');
+		redirect('/');
 	}
 
 	return (
