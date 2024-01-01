@@ -48,7 +48,7 @@ export default async function Page() {
 				<ul>
 					{courses.map((course) => (
 						<li key={course.id} className="list-inside list-disc">
-							<Link href={`${course.id}`}>{course.name}</Link>
+							<Link href={`/courses/${course.id}`}>{course.name}</Link>
 						</li>
 					))}
 				</ul>
