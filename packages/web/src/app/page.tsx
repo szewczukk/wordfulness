@@ -3,6 +3,7 @@ import Input from '@/ui/Input';
 import api from '@/utils/api';
 import { courseSchema, userSchema } from '@/utils/types';
 import { revalidateTag } from 'next/cache';
+import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
 
@@ -47,7 +48,7 @@ export default async function Page() {
 				<ul>
 					{courses.map((course) => (
 						<li key={course.id} className="list-inside list-disc">
-							{course.name}
+							<Link href={`${course.id}`}>{course.name}</Link>
 						</li>
 					))}
 				</ul>

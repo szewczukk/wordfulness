@@ -234,4 +234,20 @@ app.get('/schools/:id/courses', async (req, res) => {
 	res.json(dbCourses);
 });
 
+const fetchCourseSchema = z.object({
+	id: z.string(),
+});
+
+app.get('/courses/:id', async (req, res) => {
+	const params = fetchCourseSchema.parse(req.params);
+
+	const schoolId = parseInt(params.id);
+
+	const course = (
+		await db.select().from(courses).where(eq(courses.id, schoolId))
+	)[0];
+
+	res.json(course);
+});
+
 app.listen(3001, () => console.log('Listening on 3001..'));
