@@ -4,6 +4,7 @@ import {
 	pgEnum,
 	pgTable,
 	serial,
+	text,
 	varchar,
 } from 'drizzle-orm/pg-core';
 
@@ -33,4 +34,13 @@ export const courses = pgTable('courses', {
 	schoolId: integer('schoolId')
 		.notNull()
 		.references(() => schools.id),
+});
+
+export const lessons = pgTable('lessons', {
+	id: serial('id').primaryKey(),
+	name: varchar('name', { length: 20 }).notNull(),
+	description: text('description').default('').notNull(),
+	courseId: integer('courseId')
+		.notNull()
+		.references(() => courses.id),
 });
