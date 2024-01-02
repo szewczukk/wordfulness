@@ -250,4 +250,26 @@ app.get('/courses/:id', async (req, res) => {
 	res.json(course);
 });
 
+const updateCourseBodySchema = z.object({
+	name: z.string().optional(),
+});
+
+app.patch('/courses/:id', async (req, res) => {
+	const params = fetchCourseSchema.parse(req.params);
+
+	const schoolId = parseInt(params.id);
+
+	const body = updateCourseBodySchema.parse(req.body);
+
+	const course = (
+		await db
+			.update(courses)
+			.set(body)
+			.where(eq(courses.id, schoolId))
+			.returning()
+	)[0];
+
+	res.json(course);
+});
+
 app.listen(3001, () => console.log('Listening on 3001..'));

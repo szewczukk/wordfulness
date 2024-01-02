@@ -10,7 +10,9 @@ type Props = {
 };
 
 export default async function Page({ params }: Props) {
-	const result = await api(`/courses/${params.courseId}`);
+	const result = await api(`/courses/${params.courseId}`, {
+		next: { tags: ['course'] },
+	});
 
 	const course = courseSchema.parse(result);
 
