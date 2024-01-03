@@ -30,7 +30,9 @@ export default async function RootLayout({
 		<html lang="en">
 			<body className={`${inter.className} bg-slate-100`}>
 				<nav className="flex items-center justify-between bg-slate-200 p-4">
-					<h1>Wordfulness</h1>
+					<h1>
+						<Link href="/">Wordfulness</Link>
+					</h1>
 					<ul>
 						{user && (
 							<li>
