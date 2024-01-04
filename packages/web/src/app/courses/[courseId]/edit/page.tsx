@@ -20,7 +20,7 @@ export default async function Page({ params }: Props) {
 	async function editCourseFormAction(formData: FormData) {
 		'use server';
 
-		await api(`/courses/${params.courseId}/`, {
+		await api(`/courses/${params.courseId}`, {
 			method: 'PATCH',
 			body: JSON.stringify({
 				name: formData.get('name'),
@@ -29,6 +29,15 @@ export default async function Page({ params }: Props) {
 
 		revalidateTag('course');
 		redirect(`/courses/${params.courseId}`);
+	}
+
+	async function deleteCourseFormAction() {
+		'use server';
+
+		await api(`/courses/${params.courseId}`, { method: 'DELETE' });
+
+		revalidateTag('courses');
+		redirect('/');
 	}
 
 	return (
@@ -44,9 +53,14 @@ export default async function Page({ params }: Props) {
 				<Button type="submit">Edit course</Button>
 			</form>
 			<div className="flex gap-4 border-t border-gray-950 pt-4">
-				<div className="cursor-pointer p-2 hover:bg-slate-300">
-					<TrashIcon />
-				</div>
+				<form action={deleteCourseFormAction}>
+					<button
+						type="submit"
+						className="cursor-pointer p-2 hover:bg-slate-300"
+					>
+						<TrashIcon />
+					</button>
+				</form>
 			</div>
 		</div>
 	);

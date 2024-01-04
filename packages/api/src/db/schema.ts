@@ -24,7 +24,9 @@ export const users = pgTable('users', {
 	id: serial('id').primaryKey(),
 	username: varchar('username', { length: 20 }).unique().notNull(),
 	password: char('password', { length: 60 }).notNull(),
-	schoolId: integer('schoolId').references(() => schools.id),
+	schoolId: integer('schoolId').references(() => schools.id, {
+		onDelete: 'cascade',
+	}),
 	role: userRole('role').notNull(),
 });
 
@@ -33,7 +35,7 @@ export const courses = pgTable('courses', {
 	name: varchar('name', { length: 20 }).notNull(),
 	schoolId: integer('schoolId')
 		.notNull()
-		.references(() => schools.id),
+		.references(() => schools.id, { onDelete: 'cascade' }),
 });
 
 export const lessons = pgTable('lessons', {
@@ -42,5 +44,5 @@ export const lessons = pgTable('lessons', {
 	description: text('description').default('').notNull(),
 	courseId: integer('courseId')
 		.notNull()
-		.references(() => courses.id),
+		.references(() => courses.id, { onDelete: 'cascade' }),
 });

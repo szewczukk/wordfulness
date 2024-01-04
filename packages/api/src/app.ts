@@ -241,10 +241,10 @@ const fetchCourseSchema = z.object({
 app.get('/courses/:id', async (req, res) => {
 	const params = fetchCourseSchema.parse(req.params);
 
-	const schoolId = parseInt(params.id);
+	const courseId = parseInt(params.id);
 
 	const course = (
-		await db.select().from(courses).where(eq(courses.id, schoolId))
+		await db.select().from(courses).where(eq(courses.id, courseId))
 	)[0];
 
 	res.json(course);
@@ -256,17 +256,28 @@ const updateCourseBodySchema = z.object({
 
 app.patch('/courses/:id', async (req, res) => {
 	const params = fetchCourseSchema.parse(req.params);
-
-	const schoolId = parseInt(params.id);
-
 	const body = updateCourseBodySchema.parse(req.body);
+
+	const courseId = parseInt(params.id);
 
 	const course = (
 		await db
 			.update(courses)
 			.set(body)
-			.where(eq(courses.id, schoolId))
+			.where(eq(courses.id, courseId))
 			.returning()
+	)[0];
+
+	res.json(course);
+});
+
+app.delete('/courses/:id', async (req, res) => {
+	const params = fetchCourseSchema.parse(req.params);
+
+	const courseId = parseInt(params.id);
+
+	const course = (
+		await db.delete(courses).where(eq(courses.id, courseId)).returning()
 	)[0];
 
 	res.json(course);
