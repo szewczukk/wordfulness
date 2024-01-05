@@ -36,6 +36,7 @@ export const lessonSchema = z.object({
 	id: z.number(),
 	name: z.string(),
 	courseId: z.number(),
+	description: z.string(),
 });
 
 export type Lesson = z.infer<typeof lessonSchema>;

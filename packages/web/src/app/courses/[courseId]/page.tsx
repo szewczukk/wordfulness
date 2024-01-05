@@ -47,7 +47,7 @@ export default async function Page({ params }: Props) {
 			<ul>
 				{lessons.map((lesson) => (
 					<li key={lesson.id} className="list-inside list-disc">
-						{lesson.name}
+						<Link href={`/lessons/${lesson.id}`}>{lesson.name}</Link>
 					</li>
 				))}
 				{!lessons.length && <p>No lessons</p>}

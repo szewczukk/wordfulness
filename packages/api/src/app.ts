@@ -313,4 +313,22 @@ app.post('/courses/:id/lessons', async (req, res) => {
 	res.json(lesson);
 });
 
+const fetchLessonParamsSchema = z.object({
+	id: z.string(),
+});
+
+app.get('/lessons/:id', async (req, res) => {
+	const params = fetchLessonParamsSchema.parse(req.params);
+
+	console.log(req.params);
+
+	const lessonId = parseInt(params.id);
+
+	const lesson = (
+		await db.select().from(lessons).where(eq(lessons.id, lessonId))
+	)[0];
+
+	res.json(lesson);
+});
+
 app.listen(3001, () => console.log('Listening on 3001..'));
