@@ -320,12 +320,32 @@ const fetchLessonParamsSchema = z.object({
 app.get('/lessons/:id', async (req, res) => {
 	const params = fetchLessonParamsSchema.parse(req.params);
 
-	console.log(req.params);
-
 	const lessonId = parseInt(params.id);
 
 	const lesson = (
 		await db.select().from(lessons).where(eq(lessons.id, lessonId))
+	)[0];
+
+	res.json(lesson);
+});
+
+const editLessonSchema = z.object({
+	name: z.string(),
+	description: z.string(),
+});
+
+app.patch('/lessons/:id', async (req, res) => {
+	const params = fetchLessonParamsSchema.parse(req.params);
+	const body = editLessonSchema.parse(req.body);
+
+	const lessonId = parseInt(params.id);
+
+	const lesson = (
+		await db
+			.update(lessons)
+			.set(body)
+			.where(eq(lessons.id, lessonId))
+			.returning()
 	)[0];
 
 	res.json(lesson);
