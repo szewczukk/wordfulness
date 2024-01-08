@@ -1,5 +1,5 @@
 import express from 'express';
-import { courses, lessons, schools, users } from './db/schema.js';
+import { courses, flashcards, lessons, schools, users } from './db/schema.js';
 import { z } from 'zod';
 import postgres from 'postgres';
 import { drizzle } from 'drizzle-orm/postgres-js';
@@ -349,6 +349,40 @@ app.patch('/lessons/:id', async (req, res) => {
 	)[0];
 
 	res.json(lesson);
+});
+
+app.get('/lessons/:id/flashcards', async (req, res) => {
+	const params = fetchLessonParamsSchema.parse(req.params);
+
+	const lessonId = parseInt(params.id);
+
+	const lessons = await db
+		.select()
+		.from(flashcards)
+		.where(eq(flashcards.lessonId, lessonId));
+
+	res.json(lessons);
+});
+
+const createFlashcardSchema = z.object({
+	front: z.string(),
+	back: z.string(),
+});
+
+app.post('/lessons/:id/flashcards', async (req, res) => {
+	const params = fetchLessonParamsSchema.parse(req.params);
+	const body = createFlashcardSchema.parse(req.body);
+
+	const lessonId = parseInt(params.id);
+
+	const lessons = (
+		await db
+			.insert(flashcards)
+			.values({ front: body.front, back: body.back, lessonId })
+			.returning()
+	)[0];
+
+	res.json(lessons);
 });
 
 app.listen(3001, () => console.log('Listening on 3001..'));

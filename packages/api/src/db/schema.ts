@@ -46,3 +46,12 @@ export const lessons = pgTable('lessons', {
 		.notNull()
 		.references(() => courses.id, { onDelete: 'cascade' }),
 });
+
+export const flashcards = pgTable('flashcards', {
+	id: serial('id').primaryKey(),
+	front: varchar('front', { length: 80 }).notNull(),
+	back: varchar('back', { length: 80 }).notNull(),
+	lessonId: integer('lessonId')
+		.notNull()
+		.references(() => lessons.id, { onDelete: 'cascade' }),
+});

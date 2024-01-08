@@ -40,3 +40,12 @@ export const lessonSchema = z.object({
 });
 
 export type Lesson = z.infer<typeof lessonSchema>;
+
+export const flashcardSchema = z.object({
+	id: z.number(),
+	front: z.string(),
+	back: z.string(),
+	lessonId: z.number(),
+});
+
+export type Flashcard = z.infer<typeof flashcardSchema>;
