@@ -56,6 +56,7 @@ export default async function Page({ params }: Props) {
 						{flashcard.front} / {flashcard.back}
 					</li>
 				))}
+				{!flashcards.length && <p>No flashcards!</p>}
 			</ul>
 			<form
 				action={createFlashcardFormAction}
