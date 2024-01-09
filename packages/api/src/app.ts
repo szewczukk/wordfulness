@@ -351,6 +351,18 @@ app.patch('/lessons/:id', async (req, res) => {
 	res.json(lesson);
 });
 
+app.delete('/lessons/:id', async (req, res) => {
+	const params = fetchLessonParamsSchema.parse(req.params);
+
+	const lessonId = parseInt(params.id);
+
+	const lesson = (
+		await db.delete(lessons).where(eq(lessons.id, lessonId)).returning()
+	)[0];
+
+	res.json(lesson);
+});
+
 app.get('/lessons/:id/flashcards', async (req, res) => {
 	const params = fetchLessonParamsSchema.parse(req.params);
 
