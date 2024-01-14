@@ -33,12 +33,12 @@ app.post('/schools', async (req, res) => {
 	res.json(result[0]);
 });
 
-const deleteSchoolParamsSchema = z.object({
+const paramsWithIdSchema = z.object({
 	id: z.string(),
 });
 
 app.delete('/schools/:id', async (req, res) => {
-	const params = deleteSchoolParamsSchema.parse(req.params);
+	const params = paramsWithIdSchema.parse(req.params);
 
 	const id = parseInt(params.id);
 
@@ -50,7 +50,7 @@ app.delete('/schools/:id', async (req, res) => {
 });
 
 app.get('/schools/:id/users', async (req, res) => {
-	const params = deleteSchoolParamsSchema.parse(req.params);
+	const params = paramsWithIdSchema.parse(req.params);
 
 	const id = parseInt(params.id);
 
@@ -122,12 +122,8 @@ app.get('/users', async (req, res) => {
 	res.json(withoutPassword);
 });
 
-const deleteUserParamsSchema = z.object({
-	id: z.string(),
-});
-
 app.delete('/users/:id', async (req, res) => {
-	const params = deleteUserParamsSchema.parse(req.params);
+	const params = paramsWithIdSchema.parse(req.params);
 
 	const id = parseInt(params.id);
 
@@ -196,17 +192,13 @@ app.get('/me', async (req, res) => {
 	res.json({ ...user, password: undefined });
 });
 
-const createCourseParamsSchema = z.object({
-	id: z.string(),
-});
-
 const createCourseBodySchema = z.object({
 	name: z.string(),
 });
 
 app.post('/schools/:id/courses', async (req, res) => {
 	const body = createCourseBodySchema.parse(req.body);
-	const params = createCourseParamsSchema.parse(req.params);
+	const params = paramsWithIdSchema.parse(req.params);
 
 	const schoolId = parseInt(params.id);
 
@@ -217,12 +209,8 @@ app.post('/schools/:id/courses', async (req, res) => {
 	res.json(course);
 });
 
-const fetchCoursesParamsSchema = z.object({
-	id: z.string(),
-});
-
 app.get('/schools/:id/courses', async (req, res) => {
-	const params = fetchCoursesParamsSchema.parse(req.params);
+	const params = paramsWithIdSchema.parse(req.params);
 
 	const schoolId = parseInt(params.id);
 
@@ -234,12 +222,8 @@ app.get('/schools/:id/courses', async (req, res) => {
 	res.json(dbCourses);
 });
 
-const fetchCourseSchema = z.object({
-	id: z.string(),
-});
-
 app.get('/courses/:id', async (req, res) => {
-	const params = fetchCourseSchema.parse(req.params);
+	const params = paramsWithIdSchema.parse(req.params);
 
 	const courseId = parseInt(params.id);
 
@@ -255,7 +239,7 @@ const updateCourseBodySchema = z.object({
 });
 
 app.patch('/courses/:id', async (req, res) => {
-	const params = fetchCourseSchema.parse(req.params);
+	const params = paramsWithIdSchema.parse(req.params);
 	const body = updateCourseBodySchema.parse(req.body);
 
 	const courseId = parseInt(params.id);
@@ -272,7 +256,7 @@ app.patch('/courses/:id', async (req, res) => {
 });
 
 app.delete('/courses/:id', async (req, res) => {
-	const params = fetchCourseSchema.parse(req.params);
+	const params = paramsWithIdSchema.parse(req.params);
 
 	const courseId = parseInt(params.id);
 
@@ -284,7 +268,7 @@ app.delete('/courses/:id', async (req, res) => {
 });
 
 app.get('/courses/:id/lessons', async (req, res) => {
-	const params = fetchCourseSchema.parse(req.params);
+	const params = paramsWithIdSchema.parse(req.params);
 
 	const courseId = parseInt(params.id);
 
@@ -301,7 +285,7 @@ const createLessonSchema = z.object({
 });
 
 app.post('/courses/:id/lessons', async (req, res) => {
-	const params = fetchCourseSchema.parse(req.params);
+	const params = paramsWithIdSchema.parse(req.params);
 	const body = createLessonSchema.parse(req.body);
 
 	const courseId = parseInt(params.id);
@@ -313,12 +297,8 @@ app.post('/courses/:id/lessons', async (req, res) => {
 	res.json(lesson);
 });
 
-const fetchLessonParamsSchema = z.object({
-	id: z.string(),
-});
-
 app.get('/lessons/:id', async (req, res) => {
-	const params = fetchLessonParamsSchema.parse(req.params);
+	const params = paramsWithIdSchema.parse(req.params);
 
 	const lessonId = parseInt(params.id);
 
@@ -335,7 +315,7 @@ const editLessonSchema = z.object({
 });
 
 app.patch('/lessons/:id', async (req, res) => {
-	const params = fetchLessonParamsSchema.parse(req.params);
+	const params = paramsWithIdSchema.parse(req.params);
 	const body = editLessonSchema.parse(req.body);
 
 	const lessonId = parseInt(params.id);
@@ -352,7 +332,7 @@ app.patch('/lessons/:id', async (req, res) => {
 });
 
 app.delete('/lessons/:id', async (req, res) => {
-	const params = fetchLessonParamsSchema.parse(req.params);
+	const params = paramsWithIdSchema.parse(req.params);
 
 	const lessonId = parseInt(params.id);
 
@@ -364,7 +344,7 @@ app.delete('/lessons/:id', async (req, res) => {
 });
 
 app.get('/lessons/:id/flashcards', async (req, res) => {
-	const params = fetchLessonParamsSchema.parse(req.params);
+	const params = paramsWithIdSchema.parse(req.params);
 
 	const lessonId = parseInt(params.id);
 
@@ -382,7 +362,7 @@ const createFlashcardSchema = z.object({
 });
 
 app.post('/lessons/:id/flashcards', async (req, res) => {
-	const params = fetchLessonParamsSchema.parse(req.params);
+	const params = paramsWithIdSchema.parse(req.params);
 	const body = createFlashcardSchema.parse(req.body);
 
 	const lessonId = parseInt(params.id);
