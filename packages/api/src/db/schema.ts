@@ -3,6 +3,7 @@ import {
 	integer,
 	pgEnum,
 	pgTable,
+	primaryKey,
 	serial,
 	text,
 	varchar,
@@ -55,3 +56,18 @@ export const flashcards = pgTable('flashcards', {
 		.notNull()
 		.references(() => lessons.id, { onDelete: 'cascade' }),
 });
+
+export const flashcardsToUsers = pgTable(
+	'flashcards-users',
+	{
+		flashcardId: integer('flashcardId')
+			.notNull()
+			.references(() => flashcards.id, { onDelete: 'cascade' }),
+		userId: integer('userId')
+			.notNull()
+			.references(() => users.id, { onDelete: 'cascade' }),
+	},
+	(table) => ({
+		pk: primaryKey({ columns: [table.flashcardId, table.userId] }),
+	})
+);

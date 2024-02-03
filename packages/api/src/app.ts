@@ -1,5 +1,12 @@
 import express from 'express';
-import { courses, flashcards, lessons, schools, users } from './db/schema.js';
+import {
+	courses,
+	flashcards,
+	flashcardsToUsers,
+	lessons,
+	schools,
+	users,
+} from './db/schema.js';
 import { z } from 'zod';
 import postgres from 'postgres';
 import { drizzle } from 'drizzle-orm/postgres-js';
@@ -375,6 +382,97 @@ app.post('/lessons/:id/flashcards', async (req, res) => {
 	)[0];
 
 	res.json(lessons);
+});
+
+app.get('/deck', async (req, res) => {
+	const bearerToken = req.headers.authorization;
+
+	if (!bearerToken) {
+		return res.sendStatus(403);
+	}
+
+	const token = bearerToken.split(' ')[1];
+
+	const payload = jwt.decode(token);
+
+	if (!payload) {
+		return res.sendStatus(400);
+	}
+
+	const result = jwtTokenSchema.parse(payload);
+
+	const user = (
+		await db.select().from(users).where(eq(users.id, result.id))
+	)[0];
+
+	if (!user) {
+		return res.sendStatus(403);
+	}
+
+	const usersFlashcard = await db
+		.select()
+		.from(flashcards)
+		.leftJoin(
+			flashcardsToUsers,
+			eq(flashcards.id, flashcardsToUsers.flashcardId)
+		)
+		.where(eq(flashcardsToUsers.userId, user.id));
+
+	res.json(usersFlashcard.map((uf) => uf.flashcards));
+});
+
+const addFlashcardToDeckBodySchema = z.object({
+	flashcardId: z.number(),
+});
+
+app.post('/deck', async (req, res) => {
+	const body = addFlashcardToDeckBodySchema.parse(req.body);
+	const bearerToken = req.headers.authorization;
+
+	if (!bearerToken) {
+		return res.sendStatus(403);
+	}
+
+	const token = bearerToken.split(' ')[1];
+
+	const payload = jwt.decode(token);
+
+	if (!payload) {
+		return res.sendStatus(400);
+	}
+
+	const result = jwtTokenSchema.parse(payload);
+
+	const flashcard = (
+		await db
+			.select()
+			.from(flashcards)
+			.where(eq(flashcards.id, body.flashcardId))
+			.limit(1)
+	)[0];
+
+	const user = (
+		await db.select().from(users).where(eq(users.id, result.id))
+	)[0];
+
+	if (!user) {
+		return res.sendStatus(403);
+	}
+
+	await db
+		.insert(flashcardsToUsers)
+		.values({ userId: user.id, flashcardId: flashcard.id });
+
+	const usersFlashcard = await db
+		.select()
+		.from(flashcards)
+		.leftJoin(
+			flashcardsToUsers,
+			eq(flashcards.id, flashcardsToUsers.flashcardId)
+		)
+		.where(eq(flashcardsToUsers.userId, user.id));
+
+	res.json(usersFlashcard.map((uf) => uf.flashcards));
 });
 
 app.listen(3001, () => console.log('Listening on 3001..'));

@@ -66,6 +66,7 @@ export default async function Page({ params }: Props) {
 				{flashcards.map((flashcard) => (
 					<li key={flashcard.id}>
 						{flashcard.front} / {flashcard.back}
+						<Button>Add to deck</Button>
 					</li>
 				))}
 				{!flashcards.length && <p>No flashcards!</p>}
