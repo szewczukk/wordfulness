@@ -2,7 +2,8 @@ import Button from '@/ui/Button';
 import Input from '@/ui/Input';
 import EditIcon from '@/ui/icons/EditIcon';
 import api from '@/utils/api';
-import { flashcardSchema, lessonSchema, userSchema } from '@/utils/types';
+import { getCurrentUser } from '@/utils/helpers';
+import { flashcardSchema, lessonSchema } from '@/utils/types';
 import { revalidateTag } from 'next/cache';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
@@ -15,14 +16,11 @@ type Props = {
 };
 
 export default async function Page({ params }: Props) {
-	let userResult: any;
-	try {
-		userResult = await api('/me');
-	} catch {
+	const currentUser = await getCurrentUser();
+
+	if (currentUser === undefined) {
 		redirect('/login');
 	}
-
-	const currentUser = userSchema.parse(userResult);
 
 	if (currentUser.role === 'superuser') {
 		redirect('/admin');

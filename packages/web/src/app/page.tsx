@@ -1,7 +1,8 @@
 import Button from '@/ui/Button';
 import Input from '@/ui/Input';
 import api from '@/utils/api';
-import { courseSchema, userSchema } from '@/utils/types';
+import { getCurrentUser } from '@/utils/helpers';
+import { courseSchema } from '@/utils/types';
 import { revalidateTag } from 'next/cache';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
@@ -19,14 +20,11 @@ async function createCourseAction(formData: FormData) {
 }
 
 export default async function Page() {
-	let result: any;
-	try {
-		result = await api('/me');
-	} catch {
+	const currentUser = await getCurrentUser();
+
+	if (currentUser === undefined) {
 		redirect('/login');
 	}
-
-	const currentUser = userSchema.parse(result);
 
 	if (currentUser.role === 'superuser') {
 		redirect('/admin');
