@@ -2,9 +2,10 @@ import Button from '@/ui/Button';
 import Input from '@/ui/Input';
 import EditIcon from '@/ui/icons/EditIcon';
 import api from '@/utils/api';
-import { flashcardSchema, lessonSchema } from '@/utils/types';
+import { flashcardSchema, lessonSchema, userSchema } from '@/utils/types';
 import { revalidateTag } from 'next/cache';
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
 import { z } from 'zod';
 
 type Props = {
@@ -14,6 +15,19 @@ type Props = {
 };
 
 export default async function Page({ params }: Props) {
+	let userResult: any;
+	try {
+		userResult = await api('/me');
+	} catch {
+		redirect('/login');
+	}
+
+	const currentUser = userSchema.parse(userResult);
+
+	if (currentUser.role === 'superuser') {
+		redirect('/admin');
+	}
+
 	const result = await api(`/lessons/${params.lessonId}`, {
 		next: { tags: ['lesson'] },
 	});
@@ -40,12 +54,17 @@ export default async function Page({ params }: Props) {
 		revalidateTag('flashcards');
 	}
 
+	const isAdminOrTeacher =
+		currentUser.role === 'admin' || currentUser.role === 'teacher';
+
 	return (
 		<div className="container mx-auto mt-8 flex flex-col items-start gap-2 bg-slate-200 p-8">
 			<h1 className="text-xl font-semibold">{lesson.name}</h1>
-			<Link className="h-8 w-8" href={`/lessons/${lesson.id}/edit`}>
-				<EditIcon />
-			</Link>
+			{isAdminOrTeacher && (
+				<Link className="h-8 w-8" href={`/lessons/${lesson.id}/edit`}>
+					<EditIcon />
+				</Link>
+			)}
 			<div className="whitespace-pre-wrap">
 				{lesson.description || <p>No description</p>}
 			</div>
@@ -58,15 +77,17 @@ export default async function Page({ params }: Props) {
 				))}
 				{!flashcards.length && <p>No flashcards!</p>}
 			</ul>
-			<form
-				action={createFlashcardFormAction}
-				className="flex items-center gap-4"
-			>
-				<Input type="text" name="front" placeholder="Enter front.." />
-				<Input type="text" name="back" placeholder="Enter back.." />
+			{isAdminOrTeacher && (
+				<form
+					action={createFlashcardFormAction}
+					className="flex items-center gap-4"
+				>
+					<Input type="text" name="front" placeholder="Enter front.." />
+					<Input type="text" name="back" placeholder="Enter back.." />
 
-				<Button type="submit">Create flashcard</Button>
-			</form>
+					<Button type="submit">Create flashcard</Button>
+				</form>
+			)}
 		</div>
 	);
 }
