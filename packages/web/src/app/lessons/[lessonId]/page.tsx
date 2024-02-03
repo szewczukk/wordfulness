@@ -7,6 +7,7 @@ import { flashcardSchema, lessonSchema } from '@/utils/types';
 import { revalidateTag } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
+import FlashcardCard from './FlashcardCard';
 
 type Props = {
 	params: {
@@ -37,6 +38,9 @@ export default async function Page({ params }: Props) {
 
 	const flashcards = z.array(flashcardSchema).parse(flashcardsResult);
 
+	const deckResult = await api(`/deck`, { next: { tags: ['deck'] } });
+	const deck = z.array(flashcardSchema).parse(deckResult);
+
 	async function createFlashcardFormAction(formData: FormData) {
 		'use server';
 
@@ -65,8 +69,10 @@ export default async function Page({ params }: Props) {
 			<ul>
 				{flashcards.map((flashcard) => (
 					<li key={flashcard.id}>
-						{flashcard.front} / {flashcard.back}
-						<Button>Add to deck</Button>
+						<FlashcardCard
+							flashcard={flashcard}
+							isInDeck={!!deck.find((f) => f.id === flashcard.id)}
+						/>
 					</li>
 				))}
 				{!flashcards.length && <p>No flashcards!</p>}
