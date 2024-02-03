@@ -11,7 +11,7 @@ import { z } from 'zod';
 import postgres from 'postgres';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import bcrypt, { compareSync } from 'bcrypt';
-import { eq } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 import jwt from 'jsonwebtoken';
 import cors from 'cors';
 
@@ -462,6 +462,60 @@ app.post('/deck', async (req, res) => {
 	await db
 		.insert(flashcardsToUsers)
 		.values({ userId: user.id, flashcardId: flashcard.id });
+
+	const usersFlashcard = await db
+		.select()
+		.from(flashcards)
+		.leftJoin(
+			flashcardsToUsers,
+			eq(flashcards.id, flashcardsToUsers.flashcardId)
+		)
+		.where(eq(flashcardsToUsers.userId, user.id));
+
+	res.json(usersFlashcard.map((uf) => uf.flashcards));
+});
+
+const deleteFlashcardFromDeckParamsSchema = z.object({
+	id: z.string(),
+});
+
+app.delete('/deck/:id', async (req, res) => {
+	const params = deleteFlashcardFromDeckParamsSchema.parse(req.params);
+
+	const flashcardId = parseInt(params.id);
+
+	const bearerToken = req.headers.authorization;
+
+	if (!bearerToken) {
+		return res.sendStatus(403);
+	}
+
+	const token = bearerToken.split(' ')[1];
+
+	const payload = jwt.decode(token);
+
+	if (!payload) {
+		return res.sendStatus(400);
+	}
+
+	const result = jwtTokenSchema.parse(payload);
+
+	const user = (
+		await db.select().from(users).where(eq(users.id, result.id))
+	)[0];
+
+	if (!user) {
+		return res.sendStatus(403);
+	}
+
+	await db
+		.delete(flashcardsToUsers)
+		.where(
+			and(
+				eq(flashcardsToUsers.userId, user.id),
+				eq(flashcardsToUsers.flashcardId, flashcardId)
+			)
+		);
 
 	const usersFlashcard = await db
 		.select()
