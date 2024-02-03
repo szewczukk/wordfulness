@@ -1,6 +1,6 @@
 import Button from '@/ui/Button';
+import EditLink from '@/ui/EditLink';
 import Input from '@/ui/Input';
-import EditIcon from '@/ui/icons/EditIcon';
 import api from '@/utils/api';
 import { getCurrentUser } from '@/utils/helpers';
 import { courseSchema, lessonSchema } from '@/utils/types';
@@ -55,11 +55,7 @@ export default async function Page({ params }: Props) {
 	return (
 		<div className="container mx-auto mt-8 flex flex-col items-start gap-2 bg-slate-200 p-8">
 			<h1 className="text-xl font-semibold">{course.name}</h1>
-			{isAdminOrTeacher && (
-				<Link className="h-8 w-8" href={`/courses/${course.id}/edit`}>
-					<EditIcon />
-				</Link>
-			)}
+			{isAdminOrTeacher && <EditLink href={`/courses/${course.id}/edit`} />}
 			<h1 className="text-xl font-semibold">Lessons</h1>
 			<ul>
 				{lessons.map((lesson) => (
