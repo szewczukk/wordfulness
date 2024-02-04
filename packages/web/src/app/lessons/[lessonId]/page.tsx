@@ -72,6 +72,7 @@ export default async function Page({ params }: Props) {
 						<FlashcardCard
 							flashcard={flashcard}
 							isInDeck={!!deck.find((f) => f.id === flashcard.id)}
+							isStudent={currentUser.role === 'student'}
 						/>
 					</li>
 				))}

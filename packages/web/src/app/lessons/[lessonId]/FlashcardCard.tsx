@@ -7,13 +7,18 @@ import { addFlashcardToDeck, removeFlashcardFromDeck } from './actions';
 type Props = {
 	flashcard: Flashcard;
 	isInDeck: boolean;
+	isStudent: boolean;
 };
 
-export default function FlashcardCard({ flashcard, isInDeck }: Props) {
+export default function FlashcardCard({
+	flashcard,
+	isInDeck,
+	isStudent,
+}: Props) {
 	return (
 		<div>
 			{flashcard.front} / {flashcard.back}
-			{isInDeck ? (
+			{isInDeck && isStudent ? (
 				<Button onClick={() => removeFlashcardFromDeck(flashcard.id)}>
 					Remove from deck
 				</Button>
