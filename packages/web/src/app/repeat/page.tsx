@@ -1,14 +1,16 @@
 import api from '@/utils/api';
-import { z } from 'zod';
 import { flashcardSchema } from '@/utils/types';
+import FlashcardLearning from './FlashcardLearning';
 
 export default async function RepeatPage() {
-	const deckResult = await api(`/deck`, { next: { tags: ['deck'] } });
-	const deck = z.array(flashcardSchema).parse(deckResult);
+	const currentFlashcardResult = await api(`/deck/nth/0`, {
+		next: { tags: ['current-flashcard'] },
+	});
+	const currentFlashcard = flashcardSchema.parse(currentFlashcardResult);
 
 	return (
 		<div className="container mx-auto mt-8 flex flex-col items-start gap-2 bg-slate-200 p-8">
-			<h1>Repeat</h1>
+			<FlashcardLearning defaultFlashcard={currentFlashcard} />
 		</div>
 	);
 }

@@ -11,7 +11,7 @@ import { z } from 'zod';
 import postgres from 'postgres';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import bcrypt, { compareSync } from 'bcrypt';
-import { and, desc, eq, sql } from 'drizzle-orm';
+import { and, asc, eq, sql } from 'drizzle-orm';
 import jwt from 'jsonwebtoken';
 import cors from 'cors';
 
@@ -565,7 +565,7 @@ app.get('/deck/nth/:n', async (req, res) => {
 			eq(flashcards.id, flashcardsToUsers.flashcardId)
 		)
 		.where(eq(flashcardsToUsers.userId, user.id))
-		.orderBy(desc(flashcardsToUsers.level))
+		.orderBy(asc(flashcardsToUsers.level))
 		.limit(N + 1);
 
 	if (usersFlashcard.length < N + 1) {
@@ -626,7 +626,7 @@ app.post('/deck/:id/increase', async (req, res) => {
 				eq(flashcards.id, flashcardsToUsers.flashcardId)
 			)
 			.where(eq(flashcardsToUsers.userId, user.id))
-			.orderBy(desc(flashcardsToUsers.level))
+			.orderBy(asc(flashcardsToUsers.level))
 			.limit(1)
 	)[0];
 
