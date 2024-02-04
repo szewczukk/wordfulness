@@ -6,15 +6,10 @@ import { addFlashcardToDeck, removeFlashcardFromDeck } from '@/utils/actions';
 type Props = {
 	flashcardId: number;
 	isInDeck: boolean;
-	isStudent: boolean;
 };
 
-export default function FlashcardControls({
-	isInDeck,
-	isStudent,
-	flashcardId,
-}: Props) {
-	if (isInDeck && isStudent) {
+export default function FlashcardControls({ isInDeck, flashcardId }: Props) {
+	if (isInDeck) {
 		return (
 			<Button onClick={() => removeFlashcardFromDeck(flashcardId)}>
 				Remove from deck

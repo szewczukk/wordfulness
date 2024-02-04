@@ -2,6 +2,8 @@ import api from '@/utils/api';
 import FlashcardCollection from '@/components/FlashcardCollection';
 import { z } from 'zod';
 import { flashcardSchema } from '@/utils/types';
+import Button from '@/ui/Button';
+import Link from 'next/link';
 
 export default async function LearningPage() {
 	const deckResult = await api(`/deck`, { next: { tags: ['deck'] } });
@@ -15,6 +17,9 @@ export default async function LearningPage() {
 				usersDeck={deck}
 				isStudent={true}
 			/>
+			<Link href="/repeat">
+				<Button>Repeat flashcards</Button>
+			</Link>
 		</div>
 	);
 }

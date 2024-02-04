@@ -18,11 +18,12 @@ export default function FlashcardCollection({
 			{flashcards.map((flashcard) => (
 				<li key={flashcard.id}>
 					<FlashcardCard flashcard={flashcard} />
-					<FlashcardControls
-						flashcardId={flashcard.id}
-						isInDeck={!!usersDeck.find((f) => f.id === flashcard.id)}
-						isStudent={isStudent}
-					/>
+					{isStudent && (
+						<FlashcardControls
+							flashcardId={flashcard.id}
+							isInDeck={!!usersDeck.find((f) => f.id === flashcard.id)}
+						/>
+					)}
 				</li>
 			))}
 			{!flashcards.length && <p>No flashcards!</p>}
