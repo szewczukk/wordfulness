@@ -2,7 +2,7 @@
 
 import { Flashcard } from '@/utils/types';
 import FlashcardCard from './FlashcardCard';
-import { addFlashcardToDeck, removeFlashcardFromDeck } from './actions';
+import { addFlashcardToDeck, removeFlashcardFromDeck } from '@/utils/actions';
 
 type Props = {
 	flashcards: Flashcard[];

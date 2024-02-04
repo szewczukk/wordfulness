@@ -4,6 +4,8 @@ import './globals.css';
 import api from '@/utils/api';
 import { User, userSchema } from '@/utils/types';
 import Link from 'next/link';
+import { getCurrentUser } from '@/utils/helpers';
+import LearningIcon from '@/ui/icons/LearningIcon';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -17,14 +19,7 @@ export default async function RootLayout({
 }: {
 	children: React.ReactNode;
 }) {
-	let user: User | undefined;
-	try {
-		const result = await api('/me');
-
-		user = userSchema.parse(result);
-	} catch (e) {
-		console.log(e);
-	}
+	const currentUser = await getCurrentUser();
 
 	return (
 		<html lang="en">
@@ -33,11 +28,18 @@ export default async function RootLayout({
 					<h1>
 						<Link href="/">Wordfulness</Link>
 					</h1>
-					<ul>
-						{user && (
-							<li>
-								<Link href="/logout">Logout</Link>
-							</li>
+					<ul className="flex gap-8">
+						{currentUser && (
+							<>
+								<li>
+									<Link href="/learn">
+										<LearningIcon />
+									</Link>
+								</li>
+								<li>
+									<Link href="/logout">Logout</Link>
+								</li>
+							</>
 						)}
 					</ul>
 				</nav>
