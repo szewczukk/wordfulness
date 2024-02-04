@@ -11,7 +11,7 @@ import { z } from 'zod';
 import postgres from 'postgres';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import bcrypt, { compareSync } from 'bcrypt';
-import { and, eq } from 'drizzle-orm';
+import { and, desc, eq, sql } from 'drizzle-orm';
 import jwt from 'jsonwebtoken';
 import cors from 'cors';
 
@@ -461,7 +461,7 @@ app.post('/deck', async (req, res) => {
 
 	await db
 		.insert(flashcardsToUsers)
-		.values({ userId: user.id, flashcardId: flashcard.id });
+		.values({ userId: user.id, flashcardId: flashcard.id, level: 0 });
 
 	const usersFlashcard = await db
 		.select()
@@ -475,12 +475,8 @@ app.post('/deck', async (req, res) => {
 	res.json(usersFlashcard.map((uf) => uf.flashcards));
 });
 
-const deleteFlashcardFromDeckParamsSchema = z.object({
-	id: z.string(),
-});
-
 app.delete('/deck/:id', async (req, res) => {
-	const params = deleteFlashcardFromDeckParamsSchema.parse(req.params);
+	const params = paramsWithIdSchema.parse(req.params);
 
 	const flashcardId = parseInt(params.id);
 
@@ -527,6 +523,114 @@ app.delete('/deck/:id', async (req, res) => {
 		.where(eq(flashcardsToUsers.userId, user.id));
 
 	res.json(usersFlashcard.map((uf) => uf.flashcards));
+});
+
+const getNthFlashcardFromDeck = z.object({
+	n: z.string(),
+});
+
+app.get('/deck/nth/:n', async (req, res) => {
+	const params = getNthFlashcardFromDeck.parse(req.params);
+	const N = parseInt(params.n);
+
+	const bearerToken = req.headers.authorization;
+
+	if (!bearerToken) {
+		return res.sendStatus(403);
+	}
+
+	const token = bearerToken.split(' ')[1];
+
+	const payload = jwt.decode(token);
+
+	if (!payload) {
+		return res.sendStatus(400);
+	}
+
+	const result = jwtTokenSchema.parse(payload);
+
+	const user = (
+		await db.select().from(users).where(eq(users.id, result.id))
+	)[0];
+
+	if (!user) {
+		return res.sendStatus(403);
+	}
+
+	const usersFlashcard = await db
+		.select()
+		.from(flashcards)
+		.leftJoin(
+			flashcardsToUsers,
+			eq(flashcards.id, flashcardsToUsers.flashcardId)
+		)
+		.where(eq(flashcardsToUsers.userId, user.id))
+		.orderBy(desc(flashcardsToUsers.level))
+		.limit(N + 1);
+
+	if (usersFlashcard.length < N + 1) {
+		res.json({});
+		return;
+	}
+
+	res.json(usersFlashcard[N].flashcards);
+});
+
+app.post('/deck/:id/increase', async (req, res) => {
+	const params = paramsWithIdSchema.parse(req.params);
+
+	const flashcardId = parseInt(params.id);
+
+	const bearerToken = req.headers.authorization;
+
+	if (!bearerToken) {
+		return res.sendStatus(403);
+	}
+
+	const token = bearerToken.split(' ')[1];
+
+	const payload = jwt.decode(token);
+
+	if (!payload) {
+		return res.sendStatus(400);
+	}
+
+	const result = jwtTokenSchema.parse(payload);
+
+	const user = (
+		await db.select().from(users).where(eq(users.id, result.id))
+	)[0];
+
+	if (!user) {
+		return res.sendStatus(403);
+	}
+
+	await db
+		.update(flashcardsToUsers)
+		.set({
+			level: sql`${flashcardsToUsers.level} + 1`,
+		})
+		.where(
+			and(
+				eq(flashcardsToUsers.flashcardId, flashcardId),
+				eq(flashcardsToUsers.userId, user.id)
+			)
+		);
+
+	const usersFlashcard = (
+		await db
+			.select()
+			.from(flashcards)
+			.leftJoin(
+				flashcardsToUsers,
+				eq(flashcards.id, flashcardsToUsers.flashcardId)
+			)
+			.where(eq(flashcardsToUsers.userId, user.id))
+			.orderBy(desc(flashcardsToUsers.level))
+			.limit(1)
+	)[0];
+
+	res.json(usersFlashcard.flashcards);
 });
 
 app.listen(3001, () => console.log('Listening on 3001..'));

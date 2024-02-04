@@ -66,6 +66,7 @@ export const flashcardsToUsers = pgTable(
 		userId: integer('userId')
 			.notNull()
 			.references(() => users.id, { onDelete: 'cascade' }),
+		level: integer('level').notNull(),
 	},
 	(table) => ({
 		pk: primaryKey({ columns: [table.flashcardId, table.userId] }),
