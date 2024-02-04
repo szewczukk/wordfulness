@@ -8,6 +8,7 @@ import { revalidateTag } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
 import FlashcardCard from './FlashcardCard';
+import FlashcardCollection from './FlashcardCollection';
 
 type Props = {
 	params: {
@@ -66,18 +67,11 @@ export default async function Page({ params }: Props) {
 				{lesson.description || <p>No description</p>}
 			</div>
 			<h2 className="font-semibold">Flashcards</h2>
-			<ul>
-				{flashcards.map((flashcard) => (
-					<li key={flashcard.id}>
-						<FlashcardCard
-							flashcard={flashcard}
-							isInDeck={!!deck.find((f) => f.id === flashcard.id)}
-							isStudent={currentUser.role === 'student'}
-						/>
-					</li>
-				))}
-				{!flashcards.length && <p>No flashcards!</p>}
-			</ul>
+			<FlashcardCollection
+				flashcards={flashcards}
+				usersDeck={deck}
+				isStudent={currentUser.role === 'student'}
+			/>
 			{isAdminOrTeacher && (
 				<form
 					action={createFlashcardFormAction}
