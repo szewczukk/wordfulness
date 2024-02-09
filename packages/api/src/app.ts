@@ -4,7 +4,6 @@ import {
 	flashcards,
 	flashcardsToUsers,
 	lessons,
-	schools,
 	users,
 } from './db/schema.js';
 import { z } from 'zod';
@@ -14,6 +13,9 @@ import bcrypt, { compareSync } from 'bcrypt';
 import { and, asc, eq, sql } from 'drizzle-orm';
 import jwt from 'jsonwebtoken';
 import cors from 'cors';
+import SchoolsController from './schools/schools.controller.js';
+import { paramsWithIdSchema } from './common/schemas.js';
+import createSchoolsRouter from './schools/schools.router.js';
 
 const queryClient = postgres(
 	'postgresql://postgres:zaq1@WSX@localhost:5432/wordfulnessjs?sslmode=disable'
@@ -22,39 +24,12 @@ const db = drizzle(queryClient);
 
 const app = express();
 
+const schoolsController = new SchoolsController(db);
+
 app.use(cors());
 app.use(express.json());
 
-const createSchoolBodySchema = z.object({
-	name: z.string().min(1).max(20),
-});
-
-app.post('/schools', async (req, res) => {
-	const body = createSchoolBodySchema.parse(req.body);
-
-	const result = await db
-		.insert(schools)
-		.values({ name: body.name })
-		.returning();
-
-	res.json(result[0]);
-});
-
-const paramsWithIdSchema = z.object({
-	id: z.string(),
-});
-
-app.delete('/schools/:id', async (req, res) => {
-	const params = paramsWithIdSchema.parse(req.params);
-
-	const id = parseInt(params.id);
-
-	const result = (
-		await db.delete(schools).where(eq(schools.id, id)).returning()
-	)[0];
-
-	res.json(result);
-});
+app.use(createSchoolsRouter(schoolsController));
 
 app.get('/schools/:id/users', async (req, res) => {
 	const params = paramsWithIdSchema.parse(req.params);
@@ -62,12 +37,6 @@ app.get('/schools/:id/users', async (req, res) => {
 	const id = parseInt(params.id);
 
 	const result = await db.select().from(users).where(eq(users.schoolId, id));
-
-	res.json(result);
-});
-
-app.get('/schools', async (req, res) => {
-	const result = await db.select().from(schools);
 
 	res.json(result);
 });
