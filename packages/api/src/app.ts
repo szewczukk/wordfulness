@@ -9,13 +9,15 @@ import {
 import { z } from 'zod';
 import postgres from 'postgres';
 import { drizzle } from 'drizzle-orm/postgres-js';
-import bcrypt, { compareSync } from 'bcrypt';
+import bcrypt from 'bcrypt';
 import { and, asc, eq, sql } from 'drizzle-orm';
 import jwt from 'jsonwebtoken';
 import cors from 'cors';
 import SchoolsController from './schools/schools.controller.js';
 import { paramsWithIdSchema } from './common/schemas.js';
 import createSchoolsRouter from './schools/schools.router.js';
+import UsersController from './users/users.controller.js';
+import createUsersRouter from './users/users.router.js';
 
 const queryClient = postgres(
 	'postgresql://postgres:zaq1@WSX@localhost:5432/wordfulnessjs?sslmode=disable'
@@ -25,88 +27,13 @@ const db = drizzle(queryClient);
 const app = express();
 
 const schoolsController = new SchoolsController(db);
+const usersController = new UsersController(db);
 
 app.use(cors());
 app.use(express.json());
 
 app.use(createSchoolsRouter(schoolsController));
-
-app.get('/schools/:id/users', async (req, res) => {
-	const params = paramsWithIdSchema.parse(req.params);
-
-	const id = parseInt(params.id);
-
-	const result = await db.select().from(users).where(eq(users.schoolId, id));
-
-	res.json(result);
-});
-
-const createUserBodySchema = z
-	.object({
-		username: z.string().min(1).max(20),
-		password: z.string().min(1).max(20),
-		role: z.literal('superuser'),
-	})
-	.or(
-		z.object({
-			username: z.string().min(1).max(20),
-			password: z.string().min(1).max(20),
-			role: z.enum(['admin', 'teacher', 'student']),
-			schoolId: z.number(),
-		})
-	);
-
-app.post('/users', async (req, res) => {
-	const body = createUserBodySchema.parse(req.body);
-
-	const password = await bcrypt.hash(body.password, 10);
-
-	if (body.role !== 'superuser') {
-		const result = await db
-			.insert(users)
-			.values({
-				password,
-				role: body.role,
-				schoolId: body.schoolId,
-				username: body.username,
-			})
-			.returning();
-
-		return res.json({ ...result[0], password: undefined });
-	}
-
-	const result = await db
-		.insert(users)
-		.values({
-			password,
-			role: body.role,
-			username: body.username,
-		})
-		.returning();
-
-	res.json({ ...result[0], password: undefined });
-});
-
-app.get('/users', async (req, res) => {
-	const result = await db.select().from(users);
-
-	const withoutPassword = result.map((user) => ({
-		...user,
-		password: undefined,
-	}));
-
-	res.json(withoutPassword);
-});
-
-app.delete('/users/:id', async (req, res) => {
-	const params = paramsWithIdSchema.parse(req.params);
-
-	const id = parseInt(params.id);
-
-	const user = (await db.delete(users).where(eq(users.id, id)).returning())[0];
-
-	res.json(user);
-});
+app.use(createUsersRouter(usersController));
 
 const loginBodySchema = z.object({
 	username: z.string().min(1).max(20),
@@ -127,7 +54,7 @@ app.post('/login', async (req, res) => {
 		return res.sendStatus(404);
 	}
 
-	if (!compareSync(body.password, user.password)) {
+	if (!bcrypt.compareSync(body.password, user.password)) {
 		return res.sendStatus(403);
 	}
 
