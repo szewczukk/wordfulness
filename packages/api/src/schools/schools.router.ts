@@ -6,9 +6,11 @@ export default function createSchoolsRouter(
 ) {
 	const router = Router();
 
-	router.post('/schools', schoolsController.create);
-	router.delete('/schools/:id', schoolsController.delete);
-	router.get('/schools', schoolsController.fetchAll);
+	router.post('/schools', (req, res) => schoolsController.create(req, res));
+	router.delete('/schools/:id', (req, res) =>
+		schoolsController.delete(req, res)
+	);
+	router.get('/schools', (req, res) => schoolsController.fetchAll(req, res));
 
 	return router;
 }

@@ -9,15 +9,16 @@ import {
 import { z } from 'zod';
 import postgres from 'postgres';
 import { drizzle } from 'drizzle-orm/postgres-js';
-import bcrypt from 'bcrypt';
 import { and, asc, eq, sql } from 'drizzle-orm';
 import jwt from 'jsonwebtoken';
 import cors from 'cors';
 import SchoolsController from './schools/schools.controller.js';
-import { paramsWithIdSchema } from './common/schemas.js';
+import { jwtTokenSchema, paramsWithIdSchema } from './common/schemas.js';
 import createSchoolsRouter from './schools/schools.router.js';
 import UsersController from './users/users.controller.js';
 import createUsersRouter from './users/users.router.js';
+import createAuthRoutes from './auth/auth.routes.js';
+import AuthController from './auth/auth.controller.js';
 
 const queryClient = postgres(
 	'postgresql://postgres:zaq1@WSX@localhost:5432/wordfulnessjs?sslmode=disable'
@@ -28,72 +29,14 @@ const app = express();
 
 const schoolsController = new SchoolsController(db);
 const usersController = new UsersController(db);
+const authController = new AuthController(db);
 
 app.use(cors());
 app.use(express.json());
 
 app.use(createSchoolsRouter(schoolsController));
 app.use(createUsersRouter(usersController));
-
-const loginBodySchema = z.object({
-	username: z.string().min(1).max(20),
-	password: z.string().min(1).max(20),
-});
-
-app.post('/login', async (req, res) => {
-	const body = loginBodySchema.parse(req.body);
-
-	const result = await db
-		.select()
-		.from(users)
-		.where(eq(users.username, body.username));
-
-	const user = result[0];
-
-	if (!user) {
-		return res.sendStatus(404);
-	}
-
-	if (!bcrypt.compareSync(body.password, user.password)) {
-		return res.sendStatus(403);
-	}
-
-	const token = jwt.sign({ id: user.id }, 'SECRET', { expiresIn: '7d' });
-
-	res.json({ token });
-});
-
-const jwtTokenSchema = z.object({
-	id: z.number(),
-});
-
-app.get('/me', async (req, res) => {
-	const bearerToken = req.headers.authorization;
-
-	if (!bearerToken) {
-		return res.sendStatus(403);
-	}
-
-	const token = bearerToken.split(' ')[1];
-
-	const payload = jwt.decode(token);
-
-	if (!payload) {
-		return res.sendStatus(400);
-	}
-
-	const result = jwtTokenSchema.parse(payload);
-
-	const user = (
-		await db.select().from(users).where(eq(users.id, result.id))
-	)[0];
-
-	if (!user) {
-		return res.sendStatus(403);
-	}
-
-	res.json({ ...user, password: undefined });
-});
+app.use(createAuthRoutes(authController));
 
 const createCourseBodySchema = z.object({
 	name: z.string(),

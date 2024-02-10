@@ -22,6 +22,7 @@ export default class SchoolsController {
 
 		res.json(result[0]);
 	}
+
 	async delete(req: Request, res: Response) {
 		const params = paramsWithIdSchema.parse(req.params);
 

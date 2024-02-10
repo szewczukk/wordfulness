@@ -4,10 +4,12 @@ import UsersController from './users.controller.js';
 export default function createUsersRouter(usersController: UsersController) {
 	const router = Router();
 
-	router.get('/users', usersController.fetchAllUsers);
-	router.get('/schools/:id/users', usersController.fetchUsersInSchool);
-	router.post('/users', usersController.create);
-	router.delete('/users/:id', usersController.delete);
+	router.get('/users', (req, res) => usersController.fetchAllUsers(req, res));
+	router.get('/schools/:id/users', (req, res) =>
+		usersController.fetchUsersInSchool(req, res)
+	);
+	router.post('/users', (req, res) => usersController.create(req, res));
+	router.delete('/users/:id', (req, res) => usersController.delete(req, res));
 
 	return router;
 }
