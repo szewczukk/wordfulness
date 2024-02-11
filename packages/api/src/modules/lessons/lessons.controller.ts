@@ -1,7 +1,7 @@
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { Request, Response } from 'express';
-import { paramsWithIdSchema } from '../../common/schemas.js';
-import { lessons } from '../../db/schema.js';
+import { paramsWithIdSchema } from '@/common/schemas.js';
+import { lessons } from '@/db/schema.js';
 import { eq } from 'drizzle-orm';
 import { createLessonSchema, editLessonSchema } from './lessons.schemas.js';
 

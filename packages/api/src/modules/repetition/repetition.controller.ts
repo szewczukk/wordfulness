@@ -2,8 +2,8 @@ import { Request, Response } from 'express';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { and, asc, eq, sql } from 'drizzle-orm';
 import jwt from 'jsonwebtoken';
-import { jwtTokenSchema, paramsWithIdSchema } from '../../common/schemas.js';
-import { flashcards, flashcardsToUsers, users } from '../../db/schema.js';
+import { jwtTokenSchema, paramsWithIdSchema } from '@/common/schemas.js';
+import { flashcards, flashcardsToUsers, users } from '@/db/schema.js';
 import {
 	addFlashcardToDeckBodySchema,
 	getNthFlashcardFromDeck,

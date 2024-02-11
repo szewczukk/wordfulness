@@ -1,7 +1,7 @@
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { Request, Response } from 'express';
-import { paramsWithIdSchema } from '../../common/schemas.js';
-import { users } from '../../db/schema.js';
+import { paramsWithIdSchema } from '@/common/schemas.js';
+import { users } from '@/db/schema.js';
 import { eq } from 'drizzle-orm';
 import { createUserBodySchema } from './users.schemas.js';
 import bcrypt from 'bcrypt';

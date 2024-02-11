@@ -1,8 +1,8 @@
-import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { Request, Response } from 'express';
-import { paramsWithIdSchema } from '../../common/schemas.js';
-import { flashcards } from '../../db/schema.js';
 import { eq } from 'drizzle-orm';
+import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
+import { paramsWithIdSchema } from '@/common/schemas.js';
+import { flashcards } from '@/db/schema.js';
 import { createFlashcardSchema } from './flashcards.schemas.js';
 
 export default class FlashcardsController {

@@ -1,12 +1,12 @@
+import { Request, Response } from 'express';
+import { eq } from 'drizzle-orm';
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import {
 	createCourseBodySchema,
 	updateCourseBodySchema,
 } from './courses.schemas.js';
-import { paramsWithIdSchema } from '../../common/schemas.js';
-import { Request, Response } from 'express';
-import { courses } from '../../db/schema.js';
-import { eq } from 'drizzle-orm';
+import { paramsWithIdSchema } from '@/common/schemas.js';
+import { courses } from '@/db/schema.js';
 
 export default class CoursesController {
 	private _db: PostgresJsDatabase;

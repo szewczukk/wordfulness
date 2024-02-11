@@ -1,8 +1,8 @@
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { Request, Response } from 'express';
-import { schools } from '../../db/schema.js';
+import { schools } from '@/db/schema.js';
 import { eq } from 'drizzle-orm';
-import { paramsWithIdSchema } from '../../common/schemas.js';
+import { paramsWithIdSchema } from '@/common/schemas.js';
 import { createSchoolBodySchema } from './schools.schemas.js';
 
 export default class SchoolsController {
