@@ -2,6 +2,7 @@ import express from 'express';
 import postgres from 'postgres';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import cors from 'cors';
+import dotenv from 'dotenv';
 import SchoolsController from './modules/schools/schools.controller.js';
 import createSchoolsRouter from './modules/schools/schools.router.js';
 import UsersController from './modules/users/users.controller.js';
@@ -16,10 +17,16 @@ import FlashcardsController from './modules/flashcards/flashcards.controller.js'
 import createFlashcardsRoutes from './modules/flashcards/flashcards.routes.js';
 import RepetitionController from './modules/repetition/repetition.controller.js';
 import createRepetitionRoutes from './modules/repetition/repetition.routes.js';
+import { exit } from 'process';
 
-const queryClient = postgres(
-	'postgresql://postgres:zaq1@WSX@localhost:5432/wordfulnessjs?sslmode=disable'
-);
+dotenv.config();
+
+if (!process.env.DB_URL) {
+	console.error('DB_URL not set');
+	exit(1);
+}
+
+const queryClient = postgres(process.env.DB_URL!);
 const db = drizzle(queryClient);
 
 const app = express();

@@ -32,7 +32,14 @@ export default class AuthController {
 			return res.sendStatus(403);
 		}
 
-		const token = jwt.sign({ id: user.id }, 'SECRET', { expiresIn: '7d' });
+		if (!process.env.JWT_SECRET) {
+			console.error('JWT_SECRET not set');
+			return res.sendStatus(500);
+		}
+
+		const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
+			expiresIn: '7d',
+		});
 
 		res.json({ token });
 	}
