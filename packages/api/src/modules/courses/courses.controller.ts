@@ -3,9 +3,9 @@ import {
 	createCourseBodySchema,
 	updateCourseBodySchema,
 } from './courses.schemas.js';
-import { paramsWithIdSchema } from '../common/schemas.js';
+import { paramsWithIdSchema } from '../../common/schemas.js';
 import { Request, Response } from 'express';
-import { courses } from '../db/schema.js';
+import { courses } from '../../db/schema.js';
 import { eq } from 'drizzle-orm';
 
 export default class CoursesController {

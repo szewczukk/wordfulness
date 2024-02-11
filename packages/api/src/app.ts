@@ -2,20 +2,20 @@ import express from 'express';
 import postgres from 'postgres';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import cors from 'cors';
-import SchoolsController from './schools/schools.controller.js';
-import createSchoolsRouter from './schools/schools.router.js';
-import UsersController from './users/users.controller.js';
-import createUsersRouter from './users/users.router.js';
-import createAuthRoutes from './auth/auth.routes.js';
-import AuthController from './auth/auth.controller.js';
-import createCoursesRoutes from './courses/courses.routes.js';
-import CoursesController from './courses/courses.controller.js';
-import createLessonsRoutes from './lessons/lessons.routes.js';
-import LessonsController from './lessons/lessons.controller.js';
-import FlashcardsController from './flashcards/flashcards.controller.js';
-import createFlashcardsRoutes from './flashcards/flashcards.routes.js';
-import RepetitionController from './repetition/repetition.controller.js';
-import createRepetitionRoutes from './repetition/repetition.routes.js';
+import SchoolsController from './modules/schools/schools.controller.js';
+import createSchoolsRouter from './modules/schools/schools.router.js';
+import UsersController from './modules/users/users.controller.js';
+import createUsersRouter from './modules/users/users.router.js';
+import createAuthRoutes from './modules/auth/auth.routes.js';
+import AuthController from './modules/auth/auth.controller.js';
+import createCoursesRoutes from './modules/courses/courses.routes.js';
+import CoursesController from './modules/courses/courses.controller.js';
+import createLessonsRoutes from './modules/lessons/lessons.routes.js';
+import LessonsController from './modules/lessons/lessons.controller.js';
+import FlashcardsController from './modules/flashcards/flashcards.controller.js';
+import createFlashcardsRoutes from './modules/flashcards/flashcards.routes.js';
+import RepetitionController from './modules/repetition/repetition.controller.js';
+import createRepetitionRoutes from './modules/repetition/repetition.routes.js';
 
 const queryClient = postgres(
 	'postgresql://postgres:zaq1@WSX@localhost:5432/wordfulnessjs?sslmode=disable'

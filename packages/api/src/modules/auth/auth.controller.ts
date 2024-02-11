@@ -4,8 +4,8 @@ import { eq } from 'drizzle-orm';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { loginBodySchema } from './auth.schemas.js';
-import { users } from '../db/schema.js';
-import { jwtTokenSchema } from '../common/schemas.js';
+import { users } from '../../db/schema.js';
+import { jwtTokenSchema } from '../../common/schemas.js';
 
 export default class AuthController {
 	private _db: PostgresJsDatabase;
