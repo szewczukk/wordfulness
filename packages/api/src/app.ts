@@ -17,6 +17,8 @@ import createCoursesRoutes from './courses/courses.routes.js';
 import CoursesController from './courses/courses.controller.js';
 import createLessonsRoutes from './lessons/lessons.routes.js';
 import LessonsController from './lessons/lessons.controller.js';
+import FlashcardsController from './flashcards/flashcards.controller.js';
+import createFlashcardsRoutes from './flashcards/flashcards.routes.js';
 
 const queryClient = postgres(
 	'postgresql://postgres:zaq1@WSX@localhost:5432/wordfulnessjs?sslmode=disable'
@@ -30,6 +32,7 @@ const usersController = new UsersController(db);
 const authController = new AuthController(db);
 const coursesController = new CoursesController(db);
 const lessonsController = new LessonsController(db);
+const flashcardsController = new FlashcardsController(db);
 
 app.use(cors());
 app.use(express.json());
@@ -39,6 +42,7 @@ app.use(createUsersRouter(usersController));
 app.use(createAuthRoutes(authController));
 app.use(createCoursesRoutes(coursesController));
 app.use(createLessonsRoutes(lessonsController));
+app.use(createFlashcardsRoutes(flashcardsController));
 
 app.get('/lessons/:id/flashcards', async (req, res) => {
 	const params = paramsWithIdSchema.parse(req.params);
