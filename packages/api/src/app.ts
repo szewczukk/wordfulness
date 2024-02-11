@@ -1,11 +1,5 @@
 import express from 'express';
-import {
-	courses,
-	flashcards,
-	flashcardsToUsers,
-	lessons,
-	users,
-} from './db/schema.js';
+import { flashcards, flashcardsToUsers, lessons, users } from './db/schema.js';
 import { z } from 'zod';
 import postgres from 'postgres';
 import { drizzle } from 'drizzle-orm/postgres-js';
@@ -19,6 +13,8 @@ import UsersController from './users/users.controller.js';
 import createUsersRouter from './users/users.router.js';
 import createAuthRoutes from './auth/auth.routes.js';
 import AuthController from './auth/auth.controller.js';
+import createCoursesRoutes from './courses/courses.routes.js';
+import CoursesController from './courses/courses.controller.js';
 
 const queryClient = postgres(
 	'postgresql://postgres:zaq1@WSX@localhost:5432/wordfulnessjs?sslmode=disable'
@@ -30,6 +26,7 @@ const app = express();
 const schoolsController = new SchoolsController(db);
 const usersController = new UsersController(db);
 const authController = new AuthController(db);
+const coursesController = new CoursesController(db);
 
 app.use(cors());
 app.use(express.json());
@@ -37,81 +34,7 @@ app.use(express.json());
 app.use(createSchoolsRouter(schoolsController));
 app.use(createUsersRouter(usersController));
 app.use(createAuthRoutes(authController));
-
-const createCourseBodySchema = z.object({
-	name: z.string(),
-});
-
-app.post('/schools/:id/courses', async (req, res) => {
-	const body = createCourseBodySchema.parse(req.body);
-	const params = paramsWithIdSchema.parse(req.params);
-
-	const schoolId = parseInt(params.id);
-
-	const course = (
-		await db.insert(courses).values({ name: body.name, schoolId }).returning()
-	)[0];
-
-	res.json(course);
-});
-
-app.get('/schools/:id/courses', async (req, res) => {
-	const params = paramsWithIdSchema.parse(req.params);
-
-	const schoolId = parseInt(params.id);
-
-	const dbCourses = await db
-		.select()
-		.from(courses)
-		.where(eq(courses.schoolId, schoolId));
-
-	res.json(dbCourses);
-});
-
-app.get('/courses/:id', async (req, res) => {
-	const params = paramsWithIdSchema.parse(req.params);
-
-	const courseId = parseInt(params.id);
-
-	const course = (
-		await db.select().from(courses).where(eq(courses.id, courseId))
-	)[0];
-
-	res.json(course);
-});
-
-const updateCourseBodySchema = z.object({
-	name: z.string().optional(),
-});
-
-app.patch('/courses/:id', async (req, res) => {
-	const params = paramsWithIdSchema.parse(req.params);
-	const body = updateCourseBodySchema.parse(req.body);
-
-	const courseId = parseInt(params.id);
-
-	const course = (
-		await db
-			.update(courses)
-			.set(body)
-			.where(eq(courses.id, courseId))
-			.returning()
-	)[0];
-
-	res.json(course);
-});
-
-app.delete('/courses/:id', async (req, res) => {
-	const params = paramsWithIdSchema.parse(req.params);
-
-	const courseId = parseInt(params.id);
-
-	const course = (
-		await db.delete(courses).where(eq(courses.id, courseId)).returning()
-	)[0];
-
-	res.json(course);
-});
+app.use(createCoursesRoutes(coursesController));
 
 app.get('/courses/:id/lessons', async (req, res) => {
 	const params = paramsWithIdSchema.parse(req.params);
