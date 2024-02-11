@@ -1,5 +1,5 @@
 import express from 'express';
-import { flashcards, flashcardsToUsers, lessons, users } from './db/schema.js';
+import { flashcards, flashcardsToUsers, users } from './db/schema.js';
 import { z } from 'zod';
 import postgres from 'postgres';
 import { drizzle } from 'drizzle-orm/postgres-js';
@@ -15,6 +15,8 @@ import createAuthRoutes from './auth/auth.routes.js';
 import AuthController from './auth/auth.controller.js';
 import createCoursesRoutes from './courses/courses.routes.js';
 import CoursesController from './courses/courses.controller.js';
+import createLessonsRoutes from './lessons/lessons.routes.js';
+import LessonsController from './lessons/lessons.controller.js';
 
 const queryClient = postgres(
 	'postgresql://postgres:zaq1@WSX@localhost:5432/wordfulnessjs?sslmode=disable'
@@ -27,6 +29,7 @@ const schoolsController = new SchoolsController(db);
 const usersController = new UsersController(db);
 const authController = new AuthController(db);
 const coursesController = new CoursesController(db);
+const lessonsController = new LessonsController(db);
 
 app.use(cors());
 app.use(express.json());
@@ -35,82 +38,7 @@ app.use(createSchoolsRouter(schoolsController));
 app.use(createUsersRouter(usersController));
 app.use(createAuthRoutes(authController));
 app.use(createCoursesRoutes(coursesController));
-
-app.get('/courses/:id/lessons', async (req, res) => {
-	const params = paramsWithIdSchema.parse(req.params);
-
-	const courseId = parseInt(params.id);
-
-	const dbLessons = await db
-		.select()
-		.from(lessons)
-		.where(eq(lessons.courseId, courseId));
-
-	res.json(dbLessons);
-});
-
-const createLessonSchema = z.object({
-	name: z.string(),
-});
-
-app.post('/courses/:id/lessons', async (req, res) => {
-	const params = paramsWithIdSchema.parse(req.params);
-	const body = createLessonSchema.parse(req.body);
-
-	const courseId = parseInt(params.id);
-
-	const lesson = (
-		await db.insert(lessons).values({ courseId, name: body.name }).returning()
-	)[0];
-
-	res.json(lesson);
-});
-
-app.get('/lessons/:id', async (req, res) => {
-	const params = paramsWithIdSchema.parse(req.params);
-
-	const lessonId = parseInt(params.id);
-
-	const lesson = (
-		await db.select().from(lessons).where(eq(lessons.id, lessonId))
-	)[0];
-
-	res.json(lesson);
-});
-
-const editLessonSchema = z.object({
-	name: z.string(),
-	description: z.string(),
-});
-
-app.patch('/lessons/:id', async (req, res) => {
-	const params = paramsWithIdSchema.parse(req.params);
-	const body = editLessonSchema.parse(req.body);
-
-	const lessonId = parseInt(params.id);
-
-	const lesson = (
-		await db
-			.update(lessons)
-			.set(body)
-			.where(eq(lessons.id, lessonId))
-			.returning()
-	)[0];
-
-	res.json(lesson);
-});
-
-app.delete('/lessons/:id', async (req, res) => {
-	const params = paramsWithIdSchema.parse(req.params);
-
-	const lessonId = parseInt(params.id);
-
-	const lesson = (
-		await db.delete(lessons).where(eq(lessons.id, lessonId)).returning()
-	)[0];
-
-	res.json(lesson);
-});
+app.use(createLessonsRoutes(lessonsController));
 
 app.get('/lessons/:id/flashcards', async (req, res) => {
 	const params = paramsWithIdSchema.parse(req.params);
