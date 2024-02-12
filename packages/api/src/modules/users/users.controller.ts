@@ -3,7 +3,7 @@ import { Request, Response } from 'express';
 import { paramsWithIdSchema } from '@/common/schemas.js';
 import { users } from '@/db/schema.js';
 import { eq } from 'drizzle-orm';
-import { createUserBodySchema } from './users.schemas.js';
+import { createUserBodySchema, updateUserBodySchema } from './users.schemas.js';
 import bcrypt from 'bcrypt';
 
 export default class UsersController {
@@ -78,5 +78,22 @@ export default class UsersController {
 		}));
 
 		res.json(withoutPassword);
+	}
+
+	async updateUser(req: Request, res: Response) {
+		const params = paramsWithIdSchema.parse(req.params);
+		const body = updateUserBodySchema.parse(req.body);
+
+		const id = parseInt(params.id);
+
+		const user = (
+			await this._db
+				.update(users)
+				.set({ username: body.username })
+				.where(eq(users.id, id))
+				.returning()
+		)[0];
+
+		res.json(user);
 	}
 }

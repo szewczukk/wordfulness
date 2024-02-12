@@ -14,3 +14,7 @@ export const createUserBodySchema = z
 			schoolId: z.number(),
 		})
 	);
+
+export const updateUserBodySchema = z.object({
+	username: z.string().min(1).max(20).optional(),
+});

@@ -6,7 +6,7 @@ import { userSchema } from './types';
 export async function getCurrentUser() {
 	let userResult: any;
 	try {
-		userResult = await api('/me');
+		userResult = await api('/me', { next: { tags: ['current-user'] } });
 	} catch {
 		return undefined;
 	}

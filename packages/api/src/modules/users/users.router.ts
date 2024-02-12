@@ -10,6 +10,9 @@ export default function createUsersRouter(usersController: UsersController) {
 	);
 	router.post('/users', (req, res) => usersController.create(req, res));
 	router.delete('/users/:id', (req, res) => usersController.delete(req, res));
+	router.patch('/users/:id', (req, res) =>
+		usersController.updateUser(req, res)
+	);
 
 	return router;
 }
