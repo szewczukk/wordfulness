@@ -1,6 +1,5 @@
 import TrashIcon from '@/ui/icons/TrashIcon';
-import { School, User } from '@/utils/types';
-import { deleteSchoolAction } from './actions';
+import { User } from '@/utils/types';
 import {
 	createColumnHelper,
 	getCoreRowModel,

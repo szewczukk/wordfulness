@@ -7,7 +7,7 @@ import { redirect } from 'next/navigation';
 const fetchSchoolsSchema = z.array(schoolSchema);
 
 export default async function Page() {
-	let result: any;
+	let result: unknown;
 	try {
 		result = await api('/me');
 	} catch {

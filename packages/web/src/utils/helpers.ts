@@ -4,7 +4,7 @@ import api from './api';
 import { userSchema } from './types';
 
 export async function getCurrentUser() {
-	let userResult: any;
+	let userResult: unknown;
 	try {
 		userResult = await api('/me', { next: { tags: ['current-user'] } });
 	} catch {

@@ -1,8 +1,6 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
-import api from '@/utils/api';
-import { User, userSchema } from '@/utils/types';
 import Link from 'next/link';
 import { getCurrentUser } from '@/utils/helpers';
 import LearningIcon from '@/ui/icons/LearningIcon';
@@ -35,6 +33,9 @@ export default async function RootLayout({
 									<Link href="/learn">
 										<LearningIcon />
 									</Link>
+								</li>
+								<li>
+									<Link href="/profile">Profile</Link>
 								</li>
 								<li>
 									<Link href="/logout">Logout</Link>
