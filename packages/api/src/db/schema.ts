@@ -29,6 +29,7 @@ export const users = pgTable('users', {
 		onDelete: 'cascade',
 	}),
 	role: userRole('role').notNull(),
+	avatarUrl: varchar('avatarUrl', { length: 128 }).notNull(),
 });
 
 export const courses = pgTable('courses', {

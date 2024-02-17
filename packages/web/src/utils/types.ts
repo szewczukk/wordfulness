@@ -13,12 +13,14 @@ export const userSchema = z
 		username: z.string(),
 		schoolId: z.number(),
 		role: z.enum(['admin', 'teacher', 'student']),
+		avatarUrl: z.string(),
 	})
 	.or(
 		z.object({
 			id: z.number(),
 			username: z.string(),
 			role: z.literal('superuser'),
+			avatarUrl: z.string(),
 		})
 	);
 

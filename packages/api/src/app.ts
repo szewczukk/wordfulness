@@ -3,6 +3,7 @@ import postgres from 'postgres';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import aws from '@aws-sdk/client-s3';
 import SchoolsController from './modules/schools/schools.controller.js';
 import createSchoolsRouter from './modules/schools/schools.router.js';
 import UsersController from './modules/users/users.controller.js';
@@ -29,10 +30,18 @@ if (!process.env.DB_URL) {
 const queryClient = postgres(process.env.DB_URL!);
 const db = drizzle(queryClient);
 
+const s3Client = new aws.S3Client({
+	region: process.env.S3_REGION,
+	credentials: {
+		accessKeyId: process.env.S3_ACCESS_KEY_ID!,
+		secretAccessKey: process.env.S3_SECRET_ACCESS_KEY!,
+	},
+});
+
 const app = express();
 
 const schoolsController = new SchoolsController(db);
-const usersController = new UsersController(db);
+const usersController = new UsersController(db, s3Client);
 const authController = new AuthController(db);
 const coursesController = new CoursesController(db);
 const lessonsController = new LessonsController(db);
@@ -40,7 +49,8 @@ const flashcardsController = new FlashcardsController(db);
 const repetitionController = new RepetitionController(db);
 
 app.use(cors());
-app.use(express.json());
+app.use(express.urlencoded({ limit: '5mb', extended: true }));
+app.use(express.json({ limit: '5mb' }));
 
 app.use(createSchoolsRouter(schoolsController));
 app.use(createUsersRouter(usersController));

@@ -1,6 +1,6 @@
 import Button from '@/ui/Button';
 import Input from '@/ui/Input';
-import api from '@/utils/api';
+import { noContentTypeApi } from '@/utils/api';
 import { getCurrentUser } from '@/utils/helpers';
 import { revalidateTag } from 'next/cache';
 import { redirect } from 'next/navigation';
@@ -8,9 +8,9 @@ import { redirect } from 'next/navigation';
 async function updateUser(formData: FormData) {
 	'use server';
 
-	await api(`/users/${formData.get('id')}`, {
+	await noContentTypeApi(`/users/${formData.get('id')}`, {
 		method: 'PATCH',
-		body: JSON.stringify({ username: formData.get('username') }),
+		body: formData,
 	});
 
 	revalidateTag('current-user');
@@ -37,6 +37,10 @@ export default async function ProfilePage() {
 						minLength={1}
 						maxLength={20}
 					/>
+				</div>
+				<div className="flex items-center gap-4">
+					<label htmlFor="avatar">Avatar</label>
+					<Input type="file" name="avatar" id="avatar" />
 				</div>
 
 				<Button type="submit">Save</Button>

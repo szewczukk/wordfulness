@@ -1,22 +1,31 @@
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { Request, Response } from 'express';
+import { eq } from 'drizzle-orm';
+import bcrypt from 'bcrypt';
+import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { paramsWithIdSchema } from '@/common/schemas.js';
 import { users } from '@/db/schema.js';
-import { eq } from 'drizzle-orm';
 import { createUserBodySchema, updateUserBodySchema } from './users.schemas.js';
-import bcrypt from 'bcrypt';
+import path from 'path';
 
 export default class UsersController {
 	private _db: PostgresJsDatabase;
+	private _s3Client: S3Client;
 
-	constructor(db: PostgresJsDatabase) {
+	constructor(db: PostgresJsDatabase, s3: S3Client) {
 		this._db = db;
+		this._s3Client = s3;
 	}
 
 	async create(req: Request, res: Response) {
 		const body = createUserBodySchema.parse(req.body);
 
 		const password = await bcrypt.hash(body.password, 10);
+
+		const defaultAvatarUrl = process.env.S3_DEFAULT_AVATAR_URL;
+		if (!defaultAvatarUrl) {
+			throw new Error('S3_DEFAULT_AVATAR_URL not set!');
+		}
 
 		if (body.role !== 'superuser') {
 			const result = await this._db
@@ -26,6 +35,7 @@ export default class UsersController {
 					role: body.role,
 					schoolId: body.schoolId,
 					username: body.username,
+					avatarUrl: defaultAvatarUrl,
 				})
 				.returning();
 
@@ -38,6 +48,7 @@ export default class UsersController {
 				password,
 				role: body.role,
 				username: body.username,
+				avatarUrl: defaultAvatarUrl,
 			})
 			.returning();
 
@@ -86,10 +97,32 @@ export default class UsersController {
 
 		const id = parseInt(params.id);
 
+		let avatarUrl: string | undefined;
+		if (req.file && req.file.size > 0) {
+			const extension = path.extname(req.file.originalname);
+			const key = `${crypto.randomUUID()}${extension}`;
+
+			try {
+				await this._s3Client.send(
+					new PutObjectCommand({
+						Bucket: process.env.S3_BUCKET_NAME,
+						Key: key,
+						Body: req.file.buffer,
+						ACL: 'public-read',
+					})
+				);
+
+				avatarUrl = `${process.env.S3_AVATAR_BASE_URL}/${key}`;
+			} catch (err) {
+				console.error(err);
+				throw err;
+			}
+		}
+
 		const user = (
 			await this._db
 				.update(users)
-				.set({ username: body.username })
+				.set({ username: body.username, avatarUrl })
 				.where(eq(users.id, id))
 				.returning()
 		)[0];
