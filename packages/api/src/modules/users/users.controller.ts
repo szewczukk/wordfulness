@@ -2,7 +2,11 @@ import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { Request, Response } from 'express';
 import { eq } from 'drizzle-orm';
 import bcrypt from 'bcrypt';
-import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import {
+	DeleteObjectCommand,
+	PutObjectCommand,
+	S3Client,
+} from '@aws-sdk/client-s3';
 import { paramsWithIdSchema } from '@/common/schemas.js';
 import { users } from '@/db/schema.js';
 import { createUserBodySchema, updateUserBodySchema } from './users.schemas.js';
@@ -99,6 +103,29 @@ export default class UsersController {
 
 		let avatarUrl: string | undefined;
 		if (req.file && req.file.size > 0) {
+			const user = (
+				await this._db.select().from(users).where(eq(users.id, id))
+			)[0];
+
+			if (user.avatarUrl !== process.env.S3_DEFAULT_AVATAR_URL) {
+				const key = user.avatarUrl.replace(
+					`${process.env.S3_AVATAR_BASE_URL}/`,
+					''
+				);
+
+				try {
+					await this._s3Client.send(
+						new DeleteObjectCommand({
+							Bucket: process.env.S3_BUCKET_NAME,
+							Key: key,
+						})
+					);
+				} catch (err) {
+					console.error(err);
+					throw err;
+				}
+			}
+
 			const extension = path.extname(req.file.originalname);
 			const key = `${crypto.randomUUID()}${extension}`;
 

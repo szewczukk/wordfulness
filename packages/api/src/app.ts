@@ -38,8 +38,6 @@ const s3Client = new aws.S3Client({
 	},
 });
 
-const app = express();
-
 const schoolsController = new SchoolsController(db);
 const usersController = new UsersController(db, s3Client);
 const authController = new AuthController(db);
@@ -47,6 +45,8 @@ const coursesController = new CoursesController(db);
 const lessonsController = new LessonsController(db);
 const flashcardsController = new FlashcardsController(db);
 const repetitionController = new RepetitionController(db);
+
+const app = express();
 
 app.use(cors());
 app.use(express.urlencoded({ limit: '5mb', extended: true }));
