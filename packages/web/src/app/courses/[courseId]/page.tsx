@@ -55,6 +55,7 @@ export default async function Page({ params }: Props) {
 	return (
 		<div className="container mx-auto mt-8 flex flex-col items-start gap-2 bg-slate-200 p-8">
 			<h1 className="text-xl font-semibold">{course.name}</h1>
+			<pre>{course.description}</pre>
 			{isAdminOrTeacher && <EditLink href={`/courses/${course.id}/edit`} />}
 			<h1 className="text-xl font-semibold">Lessons</h1>
 			<ul>

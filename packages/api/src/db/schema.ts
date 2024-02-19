@@ -35,6 +35,7 @@ export const users = pgTable('users', {
 export const courses = pgTable('courses', {
 	id: serial('id').primaryKey(),
 	name: varchar('name', { length: 20 }).notNull(),
+	description: text('description').default('').notNull(),
 	schoolId: integer('schoolId')
 		.notNull()
 		.references(() => schools.id, { onDelete: 'cascade' }),

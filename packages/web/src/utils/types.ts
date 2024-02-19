@@ -29,6 +29,7 @@ export type User = z.infer<typeof userSchema>;
 export const courseSchema = z.object({
 	id: z.number(),
 	name: z.string(),
+	description: z.string(),
 	schoolId: z.number(),
 });
 

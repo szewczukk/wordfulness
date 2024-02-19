@@ -24,6 +24,7 @@ export default async function Page({ params }: Props) {
 			method: 'PATCH',
 			body: JSON.stringify({
 				name: formData.get('name'),
+				description: formData.get('description'),
 			}),
 		});
 
@@ -49,6 +50,13 @@ export default async function Page({ params }: Props) {
 			>
 				<label htmlFor="name">Course name</label>
 				<Input type="text" name="name" defaultValue={course.name} id="name" />
+				<textarea
+					name="description"
+					id="description"
+					className="h-64 w-80 resize-none outline-none"
+				>
+					{course.description}
+				</textarea>
 
 				<Button type="submit">Edit course</Button>
 			</form>

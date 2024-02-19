@@ -6,4 +6,5 @@ export const createCourseBodySchema = z.object({
 
 export const updateCourseBodySchema = z.object({
 	name: z.string().optional(),
+	description: z.string().optional(),
 });

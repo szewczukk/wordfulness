@@ -62,9 +62,7 @@ export default async function Page({ params }: Props) {
 		<div className="container mx-auto mt-8 flex flex-col items-start gap-2 bg-slate-200 p-8">
 			<h1 className="text-xl font-semibold">{lesson.name}</h1>
 			{isAdminOrTeacher && <EditLink href={`/lessons/${lesson.id}/edit`} />}
-			<div className="whitespace-pre-wrap">
-				{lesson.description || <p>No description</p>}
-			</div>
+			<pre>{lesson.description || <p>No description</p>}</pre>
 			<h2 className="font-semibold">Flashcards</h2>
 			<FlashcardCollection
 				flashcards={flashcards}
