@@ -1,32 +1,16 @@
-import { User } from '@/utils/types';
-import { FormEvent } from 'react';
+import { FormEventHandler } from 'react';
 import Input from '@/ui/Input';
 import Select from '@/ui/Select';
 import Button from '@/ui/Button';
-import { createUserAction } from '@/utils/actions';
 
 type Props = {
 	schoolId: number;
-	onUserCreated: (user: User) => void;
+	onSubmit: FormEventHandler<HTMLFormElement>;
 };
 
-export default function CreateUserForm({ schoolId, onUserCreated }: Props) {
-	const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-		e.preventDefault();
-
-		const formData = new FormData(e.currentTarget);
-
-		const user = await createUserAction(formData);
-
-		if (!user) {
-			return;
-		}
-
-		onUserCreated(user);
-	};
-
+export default function CreateUserForm({ onSubmit, schoolId }: Props) {
 	return (
-		<form className="flex items-center gap-2" onSubmit={handleSubmit}>
+		<form className="flex items-center gap-2" onSubmit={onSubmit}>
 			<Input type="text" name="username" placeholder="Enter username.." />
 			<Input type="password" name="password" placeholder="Enter password.." />
 			<Input type="number" name="schoolId" defaultValue={schoolId} hidden />

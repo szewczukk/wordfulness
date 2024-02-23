@@ -2,11 +2,15 @@
 
 import { School, User } from '@/utils/types';
 import SchoolsTable from './SchoolsTable';
-import { useEffect, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 import CreateSchoolForm from './CreateSchoolForm';
 import UsersTable from '@/components/UsersTable';
-import CreateUserForm from '../../components/CreateUserForm';
-import { deleteUserAction, fetchUsers } from '@/utils/actions';
+import CreateUserForm from '@/components/CreateUserForm';
+import {
+	createUserAction,
+	deleteUserAction,
+	fetchUsers,
+} from '@/utils/actions';
 
 type Props = {
 	schools: School[];
@@ -38,7 +42,16 @@ export default function AdminDashboard({ schools }: Props) {
 		})();
 	}, [selectedSchool]);
 
-	const handleUserCreated = (user: User) => {
+	const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
+
+		const formData = new FormData(e.currentTarget);
+
+		const user = await createUserAction(formData);
+		if (!user) {
+			return;
+		}
+
 		setSchoolsUsers((prev) => {
 			if (!prev) {
 				return [user];
@@ -71,8 +84,8 @@ export default function AdminDashboard({ schools }: Props) {
 						Selected school: {selectedSchool.name}
 					</h1>
 					<CreateUserForm
+						onSubmit={handleSubmit}
 						schoolId={selectedSchool.id}
-						onUserCreated={handleUserCreated}
 					/>
 					<UsersTable users={schoolsUsers} onUserDeleted={handleUserDeleted} />
 				</>
