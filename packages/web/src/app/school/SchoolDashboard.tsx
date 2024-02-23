@@ -8,9 +8,10 @@ import useSchoolsUsers from '@/hooks/useSchoolsUsers';
 type Props = {
 	school: School;
 	users: User[];
+	currentUser: User;
 };
 
-export default function SchoolDashboard({ users, school }: Props) {
+export default function SchoolDashboard({ users, school, currentUser }: Props) {
 	const { deleteUser, handleCreateUserFormSubmit, schoolsUsers } =
 		useSchoolsUsers(users);
 
@@ -19,10 +20,12 @@ export default function SchoolDashboard({ users, school }: Props) {
 			<h1>{school.name}</h1>
 			<h2>Users</h2>
 			<UsersTable users={schoolsUsers} onUserDeleted={deleteUser} />
-			<CreateUserForm
-				onSubmit={handleCreateUserFormSubmit}
-				schoolId={school.id}
-			/>
+			{currentUser.role === 'admin' && (
+				<CreateUserForm
+					onSubmit={handleCreateUserFormSubmit}
+					schoolId={school.id}
+				/>
+			)}
 		</div>
 	);
 }

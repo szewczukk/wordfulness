@@ -14,7 +14,9 @@ export default async function SchoolPage() {
 	const school = await getSchool(currentUser.schoolId);
 	const users = await getSchoolsUsers(currentUser.schoolId);
 
-	return <SchoolDashboard users={users} school={school} />;
+	return (
+		<SchoolDashboard users={users} school={school} currentUser={currentUser} />
+	);
 }
 
 async function getSchool(schoolId: number) {
