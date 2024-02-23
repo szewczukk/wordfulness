@@ -40,4 +40,16 @@ export default class SchoolsController {
 
 		res.json(result);
 	}
+
+	async fetch(req: Request, res: Response) {
+		const params = paramsWithIdSchema.parse(req.params);
+
+		const id = parseInt(params.id);
+
+		const result = (
+			await this._db.select().from(schools).where(eq(schools.id, id))
+		)[0];
+
+		res.json(result);
+	}
 }

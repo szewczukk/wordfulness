@@ -4,9 +4,9 @@ import { School, User } from '@/utils/types';
 import SchoolsTable from './SchoolsTable';
 import { useEffect, useState } from 'react';
 import CreateSchoolForm from './CreateSchoolForm';
-import UsersTable from './UsersTable';
-import { deleteUserAction, fetchUsers } from './actions';
-import CreateUserForm from './CreateUserForm';
+import UsersTable from '@/components/UsersTable';
+import CreateUserForm from '../../components/CreateUserForm';
+import { deleteUserAction, fetchUsers } from '@/utils/actions';
 
 type Props = {
 	schools: School[];

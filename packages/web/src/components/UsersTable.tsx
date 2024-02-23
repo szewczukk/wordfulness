@@ -12,7 +12,7 @@ type Props = {
 	onUserDeleted: (userId: number) => void;
 };
 
-export default function SchoolsTable({ users, onUserDeleted }: Props) {
+export default function UsersTable({ users, onUserDeleted }: Props) {
 	const columnHelper = createColumnHelper<User>();
 	const columns = [
 		columnHelper.accessor('id', { cell: (info) => info.getValue() }),

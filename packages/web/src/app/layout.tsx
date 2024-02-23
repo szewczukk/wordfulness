@@ -30,6 +30,9 @@ export default async function RootLayout({
 						{currentUser && (
 							<>
 								<li>
+									<Link href="/school">School</Link>
+								</li>
+								<li>
 									<Link href="/learn">
 										<LearningIcon />
 									</Link>

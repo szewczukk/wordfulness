@@ -1,9 +1,9 @@
 import { User } from '@/utils/types';
-import { createUserAction } from './actions';
 import { FormEvent } from 'react';
 import Input from '@/ui/Input';
 import Select from '@/ui/Select';
 import Button from '@/ui/Button';
+import { createUserAction } from '@/utils/actions';
 
 type Props = {
 	schoolId: number;
