@@ -1,16 +1,13 @@
 'use client';
 
-import { School, User } from '@/utils/types';
+import { School } from '@/utils/types';
 import SchoolsTable from './SchoolsTable';
-import { FormEvent, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import CreateSchoolForm from './CreateSchoolForm';
 import UsersTable from '@/components/UsersTable';
 import CreateUserForm from '@/components/CreateUserForm';
-import {
-	createUserAction,
-	deleteUserAction,
-	fetchUsers,
-} from '@/utils/actions';
+import { fetchUsers } from '@/utils/actions';
+import useSchoolsUsers from '@/hooks/useSchoolsUsers';
 
 type Props = {
 	schools: School[];
@@ -18,7 +15,12 @@ type Props = {
 
 export default function AdminDashboard({ schools }: Props) {
 	const [selectedSchool, setSelectedSchool] = useState<School | undefined>();
-	const [schoolsUsers, setSchoolsUsers] = useState<User[]>();
+	const {
+		deleteUser,
+		handleCreateUserFormSubmit,
+		schoolsUsers,
+		setSchoolsUsers,
+	} = useSchoolsUsers([]);
 
 	const handleSelectSchool = (school: School) => {
 		setSelectedSchool((prev) => {
@@ -40,32 +42,7 @@ export default function AdminDashboard({ schools }: Props) {
 
 			setSchoolsUsers(users);
 		})();
-	}, [selectedSchool]);
-
-	const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-		e.preventDefault();
-
-		const formData = new FormData(e.currentTarget);
-
-		const user = await createUserAction(formData);
-		if (!user) {
-			return;
-		}
-
-		setSchoolsUsers((prev) => {
-			if (!prev) {
-				return [user];
-			}
-
-			return [...prev, user];
-		});
-	};
-
-	const handleUserDeleted = async (userId: number) => {
-		await deleteUserAction(userId);
-
-		setSchoolsUsers((prev) => prev?.filter((user) => user.id !== userId));
-	};
+	}, [selectedSchool, setSchoolsUsers]);
 
 	return (
 		<div className="container mx-auto mt-8 flex min-h-[704px] flex-col items-start gap-8 bg-slate-200 p-12">
@@ -84,10 +61,10 @@ export default function AdminDashboard({ schools }: Props) {
 						Selected school: {selectedSchool.name}
 					</h1>
 					<CreateUserForm
-						onSubmit={handleSubmit}
+						onSubmit={handleCreateUserFormSubmit}
 						schoolId={selectedSchool.id}
 					/>
-					<UsersTable users={schoolsUsers} onUserDeleted={handleUserDeleted} />
+					<UsersTable users={schoolsUsers} onUserDeleted={deleteUser} />
 				</>
 			)}
 		</div>
