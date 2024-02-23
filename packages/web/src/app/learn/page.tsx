@@ -1,5 +1,5 @@
 import api from '@/utils/api';
-import FlashcardCollection from '@/components/FlashcardCollection';
+import { FlashcardCollection } from '@/components/FlashcardCollection';
 import { z } from 'zod';
 import { flashcardSchema } from '@/utils/types';
 import Button from '@/ui/Button';

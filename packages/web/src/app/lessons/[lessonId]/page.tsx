@@ -7,7 +7,7 @@ import { flashcardSchema, lessonSchema } from '@/utils/types';
 import { revalidateTag } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
-import FlashcardCollection from '@/components/FlashcardCollection';
+import { FlashcardCollection } from '@/components/FlashcardCollection';
 
 type Props = {
 	params: {
