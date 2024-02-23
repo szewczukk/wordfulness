@@ -16,19 +16,13 @@ export default function useSchoolsUsers(defaultUsers: User[]) {
 			return;
 		}
 
-		setSchoolsUsers((prev) => {
-			if (!prev) {
-				return [user];
-			}
-
-			return [...prev, user];
-		});
+		setSchoolsUsers((prev) => [...prev, user]);
 	};
 
 	const deleteUser = async (userId: number) => {
 		await deleteUserAction(userId);
 
-		setSchoolsUsers((prev) => prev?.filter((user) => user.id !== userId));
+		setSchoolsUsers((prev) => prev.filter((user) => user.id !== userId));
 	};
 
 	return {
