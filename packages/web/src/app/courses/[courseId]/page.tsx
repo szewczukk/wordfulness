@@ -26,28 +26,9 @@ export default async function Page({ params }: Props) {
 		redirect('/admin');
 	}
 
-	const result = await api(`/courses/${params.courseId}`, {
-		next: { tags: ['course'] },
-	});
-
-	const course = courseSchema.parse(result);
-
-	const lessonsResult = await api(`/courses/${params.courseId}/lessons`, {
-		next: { tags: ['lessons'] },
-	});
-
-	const lessons = z.array(lessonSchema).parse(lessonsResult);
-
-	async function createLessonFormAction(formData: FormData) {
-		'use server';
-
-		await api(`/courses/${params.courseId}/lessons`, {
-			method: 'POST',
-			body: JSON.stringify({ name: formData.get('name') }),
-		});
-
-		revalidateTag('lessons');
-	}
+	const course = await getCourse(params.courseId);
+	const lessons = await getCoursesLessons(params.courseId);
+	const createLessonAction = lessonAction(params.courseId);
 
 	const isAdminOrTeacher =
 		currentUser.role === 'admin' || currentUser.role === 'teacher';
@@ -67,7 +48,7 @@ export default async function Page({ params }: Props) {
 				{!lessons.length && <p>No lessons</p>}
 			</ul>
 			{isAdminOrTeacher && (
-				<form action={createLessonFormAction} className="flex gap-4">
+				<form action={createLessonAction} className="flex gap-4">
 					<Input type="text" name="name" placeholder="Enter name.." />
 
 					<Button type="submit">Create course</Button>
@@ -75,4 +56,35 @@ export default async function Page({ params }: Props) {
 			)}
 		</div>
 	);
+}
+
+async function getCoursesLessons(courseId: number) {
+	const result = await api(`/courses/${courseId}/lessons`, {
+		next: { tags: ['lessons'] },
+	});
+
+	const lessons = z.array(lessonSchema).parse(result);
+	return lessons;
+}
+
+async function getCourse(courseId: number) {
+	const result = await api(`/courses/${courseId}`, {
+		next: { tags: ['course'] },
+	});
+
+	const course = courseSchema.parse(result);
+	return course;
+}
+
+function lessonAction(courseId: number) {
+	return async (formData: FormData) => {
+		'use server';
+
+		await api(`/courses/${courseId}/lessons`, {
+			method: 'POST',
+			body: JSON.stringify({ name: formData.get('name') }),
+		});
+
+		revalidateTag('lessons');
+	};
 }

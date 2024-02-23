@@ -12,6 +12,5 @@ export async function getCurrentUser() {
 	}
 
 	const currentUser = userSchema.parse(userResult);
-
 	return currentUser;
 }
