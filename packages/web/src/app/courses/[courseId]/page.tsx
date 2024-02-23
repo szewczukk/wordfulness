@@ -28,7 +28,7 @@ export default async function Page({ params }: Props) {
 
 	const course = await getCourse(params.courseId);
 	const lessons = await getCoursesLessons(params.courseId);
-	const createLessonAction = lessonAction(params.courseId);
+	const createLesson = createLessonFormAction(params.courseId);
 
 	const isAdminOrTeacher =
 		currentUser.role === 'admin' || currentUser.role === 'teacher';
@@ -48,7 +48,7 @@ export default async function Page({ params }: Props) {
 				{!lessons.length && <p>No lessons</p>}
 			</ul>
 			{isAdminOrTeacher && (
-				<form action={createLessonAction} className="flex gap-4">
+				<form action={createLesson} className="flex gap-4">
 					<Input type="text" name="name" placeholder="Enter name.." />
 
 					<Button type="submit">Create course</Button>
@@ -76,7 +76,7 @@ async function getCourse(courseId: number) {
 	return course;
 }
 
-function lessonAction(courseId: number) {
+function createLessonFormAction(courseId: number) {
 	return async (formData: FormData) => {
 		'use server';
 
