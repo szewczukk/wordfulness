@@ -154,6 +154,6 @@ export default class UsersController {
 				.returning()
 		)[0];
 
-		res.json(user);
+		res.json({ ...user, password: undefined });
 	}
 }
