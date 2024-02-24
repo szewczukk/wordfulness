@@ -21,7 +21,6 @@ export const userSchema = z
 			username: z.string(),
 			role: z.literal('superuser'),
 			avatarUrl: z.string(),
-			schoolId: z.number(),
 		})
 	);
 

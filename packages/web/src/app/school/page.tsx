@@ -11,6 +11,10 @@ export default async function SchoolPage() {
 		redirect('/login');
 	}
 
+	if (currentUser.role === 'superuser') {
+		redirect('/');
+	}
+
 	const school = await getSchool(currentUser.schoolId);
 	const users = await getSchoolsUsers(currentUser.schoolId);
 
