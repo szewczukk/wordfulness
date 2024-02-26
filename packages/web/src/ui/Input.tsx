@@ -4,5 +4,10 @@ export default function Input({
 	className,
 	...props
 }: InputHTMLAttributes<HTMLInputElement>) {
-	return <input className={`px-2 py-1	${className}`} {...props} />;
+	return (
+		<input
+			className={`input input-bordered max-w-xs ${className}`}
+			{...props}
+		/>
+	);
 }
