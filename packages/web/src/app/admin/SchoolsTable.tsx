@@ -1,4 +1,3 @@
-import TrashIcon from '@/ui/icons/TrashIcon';
 import { School } from '@/utils/types';
 import { deleteSchoolAction } from './actions';
 import {
@@ -7,6 +6,7 @@ import {
 	useReactTable,
 } from '@tanstack/react-table';
 import Table from '@/ui/Table';
+import Button from '@/ui/Button';
 
 type Props = {
 	schools: School[];
@@ -26,23 +26,19 @@ export default function SchoolsTable({
 		columnHelper.display({
 			header: 'Actions',
 			cell: ({ row }) => (
-				<div className="flex items-center justify-center gap-4">
-					<button
-						className="p-2 transition-colors hover:bg-slate-400"
+				<div className="space-x-2">
+					<Button
+						className="btn-error btn-xs"
 						onClick={() => deleteSchoolAction(row.original.id)}
 					>
-						<TrashIcon />
-					</button>
-					<button
-						className={`border px-6 py-1 ${
-							selectedSchoolId === row.original.id
-								? 'border-gray-800 bg-transparent text-gray-800 hover:border-gray-300 hover:bg-gray-400 hover:text-gray-50'
-								: 'border-transparent bg-gray-800 text-gray-50 hover:bg-gray-700'
-						} transition-colors`}
+						Delete
+					</Button>
+					<Button
+						className={`btn-xs ${selectedSchoolId === row.original.id ? 'btn-primary' : 'btn-neutral'}`}
 						onClick={() => selectSchool(row.original)}
 					>
 						Select
-					</button>
+					</Button>
 				</div>
 			),
 		}),

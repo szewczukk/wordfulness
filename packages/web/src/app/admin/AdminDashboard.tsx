@@ -45,8 +45,8 @@ export default function AdminDashboard({ schools }: Props) {
 	}, [selectedSchool, setSchoolsUsers]);
 
 	return (
-		<div className="container mx-auto mt-8 flex min-h-[704px] flex-col items-start gap-8 bg-slate-200 p-12">
-			<div className="flex flex-col gap-4">
+		<div className="container mx-auto mt-8 space-y-8">
+			<div className="space-y-4">
 				<CreateSchoolForm />
 				<h1 className="text-xl font-semibold">Schools</h1>
 				<SchoolsTable
