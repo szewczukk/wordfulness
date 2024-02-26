@@ -11,13 +11,21 @@ type Props = {
 export default function FlashcardControls({ isInDeck, flashcardId }: Props) {
 	if (isInDeck) {
 		return (
-			<Button onClick={() => removeFlashcardFromDeck(flashcardId)}>
+			<Button
+				onClick={() => removeFlashcardFromDeck(flashcardId)}
+				className="btn-error"
+			>
 				Remove from deck
 			</Button>
 		);
 	}
 
 	return (
-		<Button onClick={() => addFlashcardToDeck(flashcardId)}>Add to deck</Button>
+		<Button
+			onClick={() => addFlashcardToDeck(flashcardId)}
+			className="btn-success"
+		>
+			Add to deck
+		</Button>
 	);
 }

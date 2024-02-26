@@ -10,16 +10,20 @@ export default async function LearningPage() {
 	const deck = z.array(flashcardSchema).parse(deckResult);
 
 	return (
-		<div className="container mx-auto mt-8 flex flex-col items-start gap-2 bg-slate-200 p-8">
-			<h1 className="text-xl font-semibold">User&apos;s deck</h1>
-			<FlashcardCollection
-				flashcards={deck}
-				usersDeck={deck}
-				isStudent={true}
-			/>
-			<Link href="/repeat">
-				<Button>Repeat flashcards</Button>
-			</Link>
+		<div className="container mx-auto mt-8 space-y-4">
+			<div className="card bg-base-200">
+				<div className="card-body space-y-4">
+					<h1 className="card-title">User&apos;s deck</h1>
+					<FlashcardCollection
+						flashcards={deck}
+						usersDeck={deck}
+						isStudent={true}
+					/>
+					<Link href="/repeat">
+						<Button className="btn-success">Repeat flashcards</Button>
+					</Link>
+				</div>
+			</div>
 		</div>
 	);
 }

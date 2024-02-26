@@ -9,8 +9,10 @@ export default async function RepeatPage() {
 	const currentFlashcard = flashcardSchema.parse(currentFlashcardResult);
 
 	return (
-		<div className="container mx-auto mt-8 flex flex-col items-start gap-2 bg-slate-200 p-8">
-			<FlashcardLearning defaultFlashcard={currentFlashcard} />
+		<div className="container mx-auto mt-8 space-y-2">
+			<div className="bg-base-200 flex justify-center rounded-xl p-4">
+				<FlashcardLearning defaultFlashcard={currentFlashcard} />
+			</div>
 		</div>
 	);
 }
