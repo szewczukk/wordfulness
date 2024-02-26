@@ -4,6 +4,8 @@ import api from '@/utils/api';
 import { revalidateTag } from 'next/cache';
 import { z } from 'zod';
 import { userSchema } from './types';
+import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
 
 export async function addFlashcardToDeck(flashcardId: number) {
 	await api('/deck', {
@@ -68,4 +70,11 @@ export async function deleteUserAction(id: number) {
 	const user = userSchema.parse(result);
 
 	return user;
+}
+
+export async function logoutAction() {
+	'use server';
+
+	cookies().delete('token');
+	redirect('/login');
 }

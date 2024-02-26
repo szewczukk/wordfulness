@@ -1,6 +1,7 @@
 import { User } from '@/utils/types';
 import Image from 'next/image';
 import Link from 'next/link';
+import LogoutButton from './LogoutButton';
 
 type Props = {
 	currentUser: User | undefined;
@@ -52,7 +53,7 @@ export default async function Navbar({ currentUser }: Props) {
 									<Link href="/profile">Profile</Link>
 								</li>
 								<li>
-									<Link href="/logout">Logout</Link>
+									<LogoutButton />
 								</li>
 							</ul>
 						</div>
