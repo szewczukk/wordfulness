@@ -22,7 +22,7 @@ export default async function Page() {
 	const courses = await getCourses(currentUser.schoolId);
 
 	return (
-		<div className="container mx-auto space-y-8 p-8">
+		<div className="container mx-auto mt-8 space-y-8">
 			<div className="card bg-base-200">
 				<div className="card-body space-y-4">
 					<h1 className="text-xl font-semibold">Courses</h1>

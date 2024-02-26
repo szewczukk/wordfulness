@@ -33,7 +33,7 @@ export default async function Page({ params }: Props) {
 		currentUser.role === 'admin' || currentUser.role === 'teacher';
 
 	return (
-		<div className="container mx-auto mt-8 space-y-8 p-8">
+		<div className="container mx-auto mt-8 space-y-8">
 			<div className="card bg-base-200">
 				<div className="card-body">
 					<h1 className="card-title">{course.name}</h1>
