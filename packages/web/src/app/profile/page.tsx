@@ -10,18 +10,24 @@ export default async function ProfilePage() {
 	}
 
 	return (
-		<div className="container mx-auto mt-8 flex flex-col items-start gap-2 bg-slate-300 p-8">
-			<p>{currentUser.username}</p>
-			<p>{currentUser.role}</p>
-			<Image
-				src={currentUser.avatarUrl}
-				alt={`${currentUser.username} avatar`}
-				width={256}
-				height={256}
-			/>
-			<Link href={`/profile/edit/`}>
-				<Button>Edit</Button>
-			</Link>
+		<div className="container mx-auto mt-8 space-y-8">
+			<div className="card bg-base-200">
+				<div className="card-body">
+					<p className="card-title">{currentUser.username}</p>
+					<p>Role: {currentUser.role}</p>
+					<Image
+						src={currentUser.avatarUrl}
+						alt={`${currentUser.username} avatar`}
+						width={256}
+						height={256}
+					/>
+					<div className="card-actions justify-end">
+						<Link href="/profile/edit">
+							<Button className="btn-primary">Edit</Button>
+						</Link>
+					</div>
+				</div>
+			</div>
 		</div>
 	);
 }
