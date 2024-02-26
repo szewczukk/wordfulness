@@ -21,14 +21,12 @@ export default function UsersTable({ users, onUserDeleted }: Props) {
 		columnHelper.display({
 			header: 'Actions',
 			cell: ({ row }) => (
-				<div className="flex items-center justify-center gap-4">
-					<button
-						className="p-2 transition-colors hover:bg-slate-400"
-						onClick={() => onUserDeleted(row.original.id)}
-					>
-						<TrashIcon />
-					</button>
-				</div>
+				<button
+					className="btn btn-error btn-xs"
+					onClick={() => onUserDeleted(row.original.id)}
+				>
+					Delete
+				</button>
 			),
 		}),
 	];

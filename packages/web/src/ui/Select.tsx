@@ -6,7 +6,10 @@ type Props = {
 
 export default function Select({ options, className, ...props }: Props) {
 	return (
-		<select className={`border bg-gray-300 px-8 py-1 ${className}`} {...props}>
+		<select
+			className={`select select-bordered max-w-xs ${className}`}
+			{...props}
+		>
 			{Object.keys(options).map((value) => (
 				<option key={value} value={value}>
 					{options[value]}

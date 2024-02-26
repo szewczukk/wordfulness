@@ -16,16 +16,20 @@ export default function SchoolDashboard({ users, school, currentUser }: Props) {
 		useSchoolsUsers(users);
 
 	return (
-		<div className="container mx-auto mt-8 space-y-2 bg-slate-200 p-8">
-			<h1>{school.name}</h1>
-			<h2>Users</h2>
-			<UsersTable users={schoolsUsers} onUserDeleted={deleteUser} />
-			{currentUser.role === 'admin' && (
-				<CreateUserForm
-					onSubmit={handleCreateUserFormSubmit}
-					schoolId={school.id}
-				/>
-			)}
+		<div className="container mx-auto mt-8 space-y-2">
+			<div className="card bg-base-200">
+				<div className="card-body space-y-2">
+					<h1 className="card-title">{school.name}</h1>
+					<h2>Users</h2>
+					<UsersTable users={schoolsUsers} onUserDeleted={deleteUser} />
+					{currentUser.role === 'admin' && (
+						<CreateUserForm
+							onSubmit={handleCreateUserFormSubmit}
+							schoolId={school.id}
+						/>
+					)}
+				</div>
+			</div>
 		</div>
 	);
 }

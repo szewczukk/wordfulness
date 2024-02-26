@@ -10,7 +10,7 @@ type Props = {
 
 export default function CreateUserForm({ onSubmit, schoolId }: Props) {
 	return (
-		<form className="flex items-center gap-2" onSubmit={onSubmit}>
+		<form className="flex items-center gap-4" onSubmit={onSubmit}>
 			<Input type="text" name="username" placeholder="Enter username.." />
 			<Input type="password" name="password" placeholder="Enter password.." />
 			<Input type="number" name="schoolId" defaultValue={schoolId} hidden />
@@ -20,7 +20,9 @@ export default function CreateUserForm({ onSubmit, schoolId }: Props) {
 				options={{ admin: 'Admin', teacher: 'Teacher', student: 'Student' }}
 			/>
 
-			<Button type="submit">Create user</Button>
+			<Button type="submit" className="btn-success">
+				Create user
+			</Button>
 		</form>
 	);
 }

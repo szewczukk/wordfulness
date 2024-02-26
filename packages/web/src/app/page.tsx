@@ -34,7 +34,7 @@ export default async function Page() {
 						))}
 					</ul>
 					{currentUser.role === 'admin' && (
-						<form action={createCourseAction} className="space-x-4">
+						<form action={createCourseAction} className="flex gap-4">
 							<Input type="text" name="name" placeholder="Enter name.." />
 							<Input
 								type="number"
