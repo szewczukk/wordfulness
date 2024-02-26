@@ -18,12 +18,16 @@ export default async function Navbar({ currentUser }: Props) {
 				{currentUser && (
 					<>
 						<ul className="menu menu-horizontal">
-							<li>
-								<Link href="/school">School</Link>
-							</li>
-							<li>
-								<Link href="/learn">Learn</Link>
-							</li>
+							{currentUser.role === 'admin' && (
+								<li>
+									<Link href="/school">School</Link>
+								</li>
+							)}
+							{currentUser.role === 'student' && (
+								<li>
+									<Link href="/learn">Learn</Link>
+								</li>
+							)}
 						</ul>
 						<div className="dropdown dropdown-end">
 							<div
