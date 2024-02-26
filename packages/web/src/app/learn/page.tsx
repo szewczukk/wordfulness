@@ -6,8 +6,7 @@ import Button from '@/ui/Button';
 import Link from 'next/link';
 
 export default async function LearningPage() {
-	const deckResult = await api(`/deck`, { next: { tags: ['deck'] } });
-	const deck = z.array(flashcardSchema).parse(deckResult);
+	const deck = await getDeck();
 
 	return (
 		<div className="container mx-auto mt-8 space-y-4">
@@ -26,4 +25,10 @@ export default async function LearningPage() {
 			</div>
 		</div>
 	);
+}
+
+async function getDeck() {
+	const deckResult = await api(`/deck`, { next: { tags: ['deck'] } });
+	const deck = z.array(flashcardSchema).parse(deckResult);
+	return deck;
 }
