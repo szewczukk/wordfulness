@@ -26,34 +26,9 @@ export default async function Page({ params }: Props) {
 		redirect('/admin');
 	}
 
-	const result = await api(`/lessons/${params.lessonId}`, {
-		next: { tags: ['lesson'] },
-	});
-
-	const lesson = lessonSchema.parse(result);
-
-	const flashcardsResult = await api(`/lessons/${params.lessonId}/flashcards`, {
-		next: { tags: ['flashcards'] },
-	});
-
-	const flashcards = z.array(flashcardSchema).parse(flashcardsResult);
-
-	const deckResult = await api(`/deck`, { next: { tags: ['deck'] } });
-	const deck = z.array(flashcardSchema).parse(deckResult);
-
-	async function createFlashcardFormAction(formData: FormData) {
-		'use server';
-
-		await api(`/lessons/${params.lessonId}/flashcards`, {
-			method: 'POST',
-			body: JSON.stringify({
-				front: formData.get('front'),
-				back: formData.get('back'),
-			}),
-		});
-
-		revalidateTag('flashcards');
-	}
+	const lesson = await getLesson(params.lessonId);
+	const flashcards = await getFlashcards(params.lessonId);
+	const deck = await getDeck();
 
 	const isAdminOrTeacher =
 		currentUser.role === 'admin' || currentUser.role === 'teacher';
@@ -86,6 +61,12 @@ export default async function Page({ params }: Props) {
 					/>
 					{isAdminOrTeacher && (
 						<form action={createFlashcardFormAction} className="flex gap-4">
+							<input
+								type="number"
+								name="lessonId"
+								defaultValue={lesson.id}
+								hidden
+							/>
 							<Input type="text" name="front" placeholder="Enter front.." />
 							<Input type="text" name="back" placeholder="Enter back.." />
 
@@ -98,4 +79,45 @@ export default async function Page({ params }: Props) {
 			</div>
 		</div>
 	);
+}
+
+async function getDeck() {
+	const result = await api(`/deck`, { next: { tags: ['deck'] } });
+
+	const deck = z.array(flashcardSchema).parse(result);
+	return deck;
+}
+
+async function createFlashcardFormAction(formData: FormData) {
+	'use server';
+
+	const lessonId = formData.get('lessonId');
+
+	await api(`/lessons/${lessonId}/flashcards`, {
+		method: 'POST',
+		body: JSON.stringify({
+			front: formData.get('front'),
+			back: formData.get('back'),
+		}),
+	});
+
+	revalidateTag('flashcards');
+}
+
+async function getFlashcards(lessonId: number) {
+	const result = await api(`/lessons/${lessonId}/flashcards`, {
+		next: { tags: ['flashcards'] },
+	});
+
+	const flashcards = z.array(flashcardSchema).parse(result);
+	return flashcards;
+}
+
+async function getLesson(lessonId: number) {
+	const result = await api(`/lessons/${lessonId}`, {
+		next: { tags: ['lesson'] },
+	});
+
+	const lesson = lessonSchema.parse(result);
+	return lesson;
 }

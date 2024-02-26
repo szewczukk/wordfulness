@@ -13,6 +13,10 @@ export default function FlashcardCollection({
 	isStudent,
 	usersDeck,
 }: Props) {
+	if (!flashcards.length) {
+		return <p>No flashcards!</p>;
+	}
+
 	return (
 		<ul>
 			{flashcards.map((flashcard) => (
@@ -26,7 +30,6 @@ export default function FlashcardCollection({
 					)}
 				</li>
 			))}
-			{!flashcards.length && <p>No flashcards!</p>}
 		</ul>
 	);
 }
