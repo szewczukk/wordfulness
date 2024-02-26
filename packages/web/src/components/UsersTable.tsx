@@ -1,4 +1,3 @@
-import TrashIcon from '@/ui/icons/TrashIcon';
 import { User } from '@/utils/types';
 import {
 	createColumnHelper,
