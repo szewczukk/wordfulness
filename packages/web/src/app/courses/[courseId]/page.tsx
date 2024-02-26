@@ -1,5 +1,4 @@
 import Button from '@/ui/Button';
-import EditLink from '@/ui/EditLink';
 import Input from '@/ui/Input';
 import api from '@/utils/api';
 import { getCurrentUser } from '@/utils/helpers';
@@ -34,26 +33,45 @@ export default async function Page({ params }: Props) {
 		currentUser.role === 'admin' || currentUser.role === 'teacher';
 
 	return (
-		<div className="container mx-auto mt-8 flex flex-col items-start gap-2 bg-slate-200 p-8">
-			<h1 className="text-xl font-semibold">{course.name}</h1>
-			<pre>{course.description}</pre>
-			{isAdminOrTeacher && <EditLink href={`/courses/${course.id}/edit`} />}
-			<h1 className="text-xl font-semibold">Lessons</h1>
-			<ul>
-				{lessons.map((lesson) => (
-					<li key={lesson.id} className="list-inside list-disc">
-						<Link href={`/lessons/${lesson.id}`}>{lesson.name}</Link>
-					</li>
-				))}
-				{!lessons.length && <p>No lessons</p>}
-			</ul>
-			{isAdminOrTeacher && (
-				<form action={createLesson} className="flex gap-4">
-					<Input type="text" name="name" placeholder="Enter name.." />
+		<div className="container mx-auto mt-8 space-y-8 p-8">
+			<div className="card bg-base-200">
+				<div className="card-body">
+					<h1 className="card-title">{course.name}</h1>
+					<pre>{course.description}</pre>
+					{isAdminOrTeacher && (
+						<div className="card-actions justify-end">
+							<Link
+								href={`/courses/${course.id}/edit`}
+								className="btn btn-primary"
+							>
+								Edit
+							</Link>
+						</div>
+					)}
+				</div>
+			</div>
+			<div className="card bg-base-200">
+				<div className="card-body space-y-4">
+					<h1 className="card-title">Lessons</h1>
+					<ul className="space-y-2">
+						{lessons.map((lesson) => (
+							<li key={lesson.id} className="list-inside list-disc">
+								<Link href={`/lessons/${lesson.id}`}>{lesson.name}</Link>
+							</li>
+						))}
+						{!lessons.length && <p>No lessons</p>}
+					</ul>
+					{isAdminOrTeacher && (
+						<form action={createLesson} className="space-x-4">
+							<Input type="text" name="name" placeholder="Enter name.." />
 
-					<Button type="submit">Create course</Button>
-				</form>
-			)}
+							<Button type="submit" className="btn-success">
+								Create course
+							</Button>
+						</form>
+					)}
+				</div>
+			</div>
 		</div>
 	);
 }
