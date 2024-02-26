@@ -13,7 +13,7 @@ export default function FlashcardControls({ isInDeck, flashcardId }: Props) {
 		return (
 			<Button
 				onClick={() => removeFlashcardFromDeck(flashcardId)}
-				className="btn-error"
+				className="btn-error btn-xs"
 			>
 				Remove from deck
 			</Button>
@@ -23,7 +23,7 @@ export default function FlashcardControls({ isInDeck, flashcardId }: Props) {
 	return (
 		<Button
 			onClick={() => addFlashcardToDeck(flashcardId)}
-			className="btn-success"
+			className="btn-success btn-xs"
 		>
 			Add to deck
 		</Button>
