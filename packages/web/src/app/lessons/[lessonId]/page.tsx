@@ -1,5 +1,4 @@
 import Button from '@/ui/Button';
-import EditLink from '@/ui/EditLink';
 import Input from '@/ui/Input';
 import api from '@/utils/api';
 import { getCurrentUser } from '@/utils/helpers';
@@ -8,6 +7,7 @@ import { revalidateTag } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
 import { FlashcardCollection } from '@/components/FlashcardCollection';
+import Link from 'next/link';
 
 type Props = {
 	params: {
@@ -59,27 +59,43 @@ export default async function Page({ params }: Props) {
 		currentUser.role === 'admin' || currentUser.role === 'teacher';
 
 	return (
-		<div className="container mx-auto mt-8 flex flex-col items-start gap-2 bg-slate-200 p-8">
-			<h1 className="text-xl font-semibold">{lesson.name}</h1>
-			{isAdminOrTeacher && <EditLink href={`/lessons/${lesson.id}/edit`} />}
-			<pre>{lesson.description || <p>No description</p>}</pre>
-			<h2 className="font-semibold">Flashcards</h2>
-			<FlashcardCollection
-				flashcards={flashcards}
-				usersDeck={deck}
-				isStudent={currentUser.role === 'student'}
-			/>
-			{isAdminOrTeacher && (
-				<form
-					action={createFlashcardFormAction}
-					className="flex items-center gap-4"
-				>
-					<Input type="text" name="front" placeholder="Enter front.." />
-					<Input type="text" name="back" placeholder="Enter back.." />
+		<div className="container mx-auto mt-8 space-y-8">
+			<div className="card bg-base-200">
+				<div className="card-body">
+					<h1 className="card-title">{lesson.name}</h1>
+					<pre>{lesson.description}</pre>
+					{isAdminOrTeacher && (
+						<div className="card-actions justify-end">
+							<Link
+								href={`/lessons/${lesson.id}/edit`}
+								className="btn btn-primary"
+							>
+								Edit
+							</Link>
+						</div>
+					)}
+				</div>
+			</div>
+			<div className="card bg-base-200">
+				<div className="card-body space-y-4">
+					<h1 className="card-title">Lessons</h1>
+					<FlashcardCollection
+						flashcards={flashcards}
+						usersDeck={deck}
+						isStudent={currentUser.role === 'student'}
+					/>
+					{isAdminOrTeacher && (
+						<form action={createFlashcardFormAction} className="flex gap-4">
+							<Input type="text" name="front" placeholder="Enter front.." />
+							<Input type="text" name="back" placeholder="Enter back.." />
 
-					<Button type="submit">Create flashcard</Button>
-				</form>
-			)}
+							<Button type="submit" className="btn-success">
+								Create
+							</Button>
+						</form>
+					)}
+				</div>
+			</div>
 		</div>
 	);
 }
