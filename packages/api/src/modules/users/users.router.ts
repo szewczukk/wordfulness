@@ -15,6 +15,7 @@ export default function createUsersRouter(usersController: UsersController) {
 		usersController.fetchUsersInSchool(req, res)
 	);
 	router.post('/users', (req, res) => usersController.create(req, res));
+	router.get('/users/:id', (req, res) => usersController.fechOne(req, res));
 	router.delete('/users/:id', (req, res) => usersController.delete(req, res));
 	router.patch('/users/:id', upload.single('avatar'), (req, res) =>
 		usersController.updateUser(req, res)

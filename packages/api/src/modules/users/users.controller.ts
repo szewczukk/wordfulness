@@ -156,4 +156,15 @@ export default class UsersController {
 
 		res.json({ ...user, password: undefined });
 	}
+
+	async fechOne(req: Request, res: Response) {
+		const params = paramsWithIdSchema.parse(req.params);
+		const userId = parseInt(params.id);
+
+		const user = (
+			await this._db.select().from(users).where(eq(users.id, userId)).limit(1)
+		)[0];
+
+		res.json(user);
+	}
 }
