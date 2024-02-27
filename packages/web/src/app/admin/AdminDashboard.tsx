@@ -6,8 +6,8 @@ import { useEffect, useState } from 'react';
 import CreateSchoolForm from './CreateSchoolForm';
 import UsersTable from '@/components/UsersTable';
 import CreateUserForm from '@/components/CreateUserForm';
-import { fetchUsers } from '@/utils/actions';
 import useSchoolsUsers from '@/hooks/useSchoolsUsers';
+import { fetchUsers } from './actions';
 
 type Props = {
 	schools: School[];

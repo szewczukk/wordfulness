@@ -2,7 +2,6 @@
 
 import api from '@/utils/api';
 import { revalidateTag } from 'next/cache';
-import { z } from 'zod';
 import { userSchema } from './types';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
@@ -24,14 +23,6 @@ export async function removeFlashcardFromDeck(flashcardId: number) {
 	});
 
 	revalidateTag('deck');
-}
-
-export async function fetchUsers(schoolId: number) {
-	const response = await api(`/schools/${schoolId}/users`);
-
-	const users = z.array(userSchema).parse(response);
-
-	return users;
 }
 
 export async function createUserAction(formData: FormData) {
