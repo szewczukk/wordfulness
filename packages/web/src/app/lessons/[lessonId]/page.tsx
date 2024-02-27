@@ -57,7 +57,7 @@ export default async function Page({ params }: Props) {
 					<FlashcardCollection
 						flashcards={flashcards}
 						usersDeck={deck}
-						isStudent={currentUser.role === 'student'}
+						userRole={currentUser.role}
 					/>
 					{isAdminOrTeacher && (
 						<form action={createFlashcardFormAction} className="flex gap-4">

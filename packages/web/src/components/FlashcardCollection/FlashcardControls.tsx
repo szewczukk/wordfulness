@@ -1,14 +1,39 @@
 'use client';
 
 import Button from '@/ui/Button';
-import { addFlashcardToDeck, removeFlashcardFromDeck } from '@/utils/actions';
+import {
+	addFlashcardToDeck,
+	deleteFlashcard,
+	removeFlashcardFromDeck,
+} from '@/utils/actions';
+import { User } from '@/utils/types';
 
 type Props = {
 	flashcardId: number;
 	isInDeck: boolean;
+	userRole: User['role'];
 };
 
-export default function FlashcardControls({ isInDeck, flashcardId }: Props) {
+export default function FlashcardControls({
+	isInDeck,
+	flashcardId,
+	userRole,
+}: Props) {
+	if (!['student', 'teacher'].includes(userRole)) {
+		return '-';
+	}
+
+	if (userRole === 'teacher') {
+		return (
+			<Button
+				className="btn-error btn-xs"
+				onClick={() => deleteFlashcard(flashcardId)}
+			>
+				Delete
+			</Button>
+		);
+	}
+
 	if (isInDeck) {
 		return (
 			<Button

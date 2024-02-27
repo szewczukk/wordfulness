@@ -40,4 +40,18 @@ export default class FlashcardsController {
 
 		res.json(lessons);
 	}
+
+	async deleteFlashcard(req: Request, res: Response) {
+		const params = paramsWithIdSchema.parse(req.params);
+		const flashcardId = parseInt(params.id);
+
+		const flashcard = (
+			await this._db
+				.delete(flashcards)
+				.where(eq(flashcards.id, flashcardId))
+				.returning()
+		)[0];
+
+		res.json(flashcard);
+	}
 }

@@ -14,5 +14,9 @@ export default function createFlashcardsRoutes(
 		flashcardsController.createFlashcard(req, res)
 	);
 
+	router.delete('/flashcards/:id', (req, res) =>
+		flashcardsController.deleteFlashcard(req, res)
+	);
+
 	return router;
 }

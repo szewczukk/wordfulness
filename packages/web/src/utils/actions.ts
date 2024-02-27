@@ -73,8 +73,12 @@ export async function deleteUserAction(id: number) {
 }
 
 export async function logoutAction() {
-	'use server';
-
 	cookies().delete('token');
 	redirect('/login');
+}
+
+export async function deleteFlashcard(flashcardId: number) {
+	await api(`/flashcards/${flashcardId}`, { method: 'DELETE' });
+
+	revalidateTag('flashcards');
 }

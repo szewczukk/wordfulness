@@ -16,7 +16,7 @@ export default async function LearningPage() {
 					<FlashcardCollection
 						flashcards={deck}
 						usersDeck={deck}
-						isStudent={true}
+						userRole="student"
 					/>
 					<Link href="/repeat">
 						<Button className="btn-success">Repeat flashcards</Button>
