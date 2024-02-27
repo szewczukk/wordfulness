@@ -10,7 +10,7 @@ export default function Table<T>({ table }: Props<T>) {
 			<table className="table-zebra table">
 				<thead>
 					{table.getHeaderGroups().map((headerGroup) => (
-						<tr key={headerGroup.id} className="font-normal text-neutral-50">
+						<tr key={headerGroup.id}>
 							{headerGroup.headers.map((header) => (
 								<th key={header.id}>
 									{header.isPlaceholder
